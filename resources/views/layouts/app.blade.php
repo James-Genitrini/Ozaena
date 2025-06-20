@@ -33,7 +33,11 @@
 </head>
 
 <body>
-
+    @if (session('status'))
+        <script>
+            alert("{{ session('status') }}");
+        </script>
+    @endif
     <header>
         <nav style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem;">
             <a href="{{ url('/') }}" style="text-decoration: none; color: #F5F5F5; font-weight: bold; font-size: 1.2rem;">
