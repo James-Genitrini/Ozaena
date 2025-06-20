@@ -27,41 +27,6 @@
             padding: 2rem;
             text-align: center;
         }
-
-        .header-3d {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 16rem;
-            position: relative;
-        }
-
-        .logo-container {
-            position: relative;
-            width: 13rem;
-            height: 13rem;
-            perspective: 1000px;
-        }
-
-        .logo-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 80%;
-            height: 80%;
-            animation: spin 7s linear infinite;
-            transform-style: preserve-3d;
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotateY(0deg);
-            }
-
-            to {
-                transform: rotateY(360deg);
-            }
-        }
     </style>
 
     @stack('styles')
@@ -69,10 +34,42 @@
 
 <body>
 
-    <header class="header-3d">
-        <div class="logo-container">
-            <img src="{{ asset('images/500_logo.png') }}" alt="Ozaena logo" class="logo-layer"/>
-        </div>
+    <header>
+        <nav style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem;">
+            <a href="{{ url('/') }}" style="text-decoration: none; color: #F5F5F5; font-weight: bold; font-size: 1.2rem;">
+                <img src="{{ asset('images/500_logo.png') }}" alt="Ozaena logo" style="height: 72px; width: auto;" />
+            </a>
+            
+    
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button title="Panier" style="background: none; border: none; cursor: pointer; padding: 0.4rem; color: #F5F5F5;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                        style="width: 24px; height: 24px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993
+                         1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125
+                         0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1
+                         5.513 7.5h12.974c.576 0 1.059.435 1.119
+                         1.007ZM8.625 10.5a.375.375 0 1 1-.75 0
+                         .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0
+                         1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                    </svg>
+                </button>
+    
+                @auth
+                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit"
+                            style="background: none; border: none; color: #F5F5F5; cursor: pointer; font-weight: 600;">
+                            Logout
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" style="color: #F5F5F5; text-decoration: none; font-weight: 600;">
+                        Login
+                    </a>
+                @endauth
+            </div>
+        </nav>
     </header>
 
     <main>
