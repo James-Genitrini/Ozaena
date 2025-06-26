@@ -41,6 +41,33 @@
         <img src="{{ asset('images/500_logo.png') }}" alt="Ozaena logo" class="logo-layer" />
     </div>
 
-    <h1>Bienvenue sur Ozæna</h1>
-    <p>Le site est en construction…</p>
+    <div class="max-w-7xl mx-auto mt-12 px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+
+            <a href="{{ route('produit.show', ['id' => 1]) }}" class="group flex flex-col items-center cursor-pointer">
+                <div class="w-64 h-64 relative overflow-hidden rounded-lg">
+                    <img src="{{ asset('images/japon_front.png') }}" alt="Maillot Home"
+                        class="w-full h-full object-contain transition-opacity duration-500 ease-in-out group-hover:opacity-0 absolute top-0 left-0" />
+                    <img src="{{ asset('images/japon_back.png') }}" alt="Maillot Home Hover"
+                        class="w-full h-full object-contain transition-opacity duration-500 ease-in-out opacity-0 group-hover:opacity-100 absolute top-0 left-0" />
+                </div>
+                <h3 class="mt-4 text-lg font-semibold text-white-900">Maillot Home</h3>
+                <p class="text-white-600 mt-1 text-base">€79.99</p>
+            </a>
+
+            <a href="{{ route('produit.show', ['id' => 2]) }}" class="group flex flex-col items-center cursor-pointer">
+                <div class="w-64 h-64 relative overflow-hidden rounded-lg">
+                    <img src="{{ asset('images/japon_front.png') }}" alt="Maillot Away"
+                        class="w-full h-full object-contain transition-opacity duration-500 ease-in-out group-hover:opacity-0 absolute top-0 left-0" />
+                    <img src="{{ asset('images/japon_back.png') }}" alt="Maillot Away Hover"
+                        class="w-full h-full object-contain transition-opacity duration-500 ease-in-out opacity-0 group-hover:opacity-100 absolute top-0 left-0" />
+                </div>
+                <h3 class="mt-4 text-lg font-semibold text-white-900">Maillot Away</h3>
+                <p class="text-white-600 mt-1 text-base">€89.99</p>
+            </a>
+
+        </div>
+    </div>
+
+
 @endsection

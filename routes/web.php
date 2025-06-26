@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Mail;
 
 Route::get('/', function () {
     return view('home');
-})->middleware(['auth', 'verified'])->name('home');
+});
 
 
 Auth::routes(['verify' => true]);
@@ -26,3 +26,5 @@ Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->
 Auth::routes();
 
 Route::get('/home', action: [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/produit/{id}', [ProduitController::class, 'show'])->name('produit.show');
