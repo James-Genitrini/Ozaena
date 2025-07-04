@@ -11,11 +11,11 @@ class ProductController extends Controller
     {
         $stocks = $product->stocks;
         $images = $product->images;
-        return response()->json([
+
+        return view('product.show', [
             'product' => $product,
             'stocks' => $stocks,
-            'images' => $images
+            'images' => $images,
         ]);
     }
-
 }

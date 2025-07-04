@@ -24,5 +24,4 @@ Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->
 
 Auth::routes();
 
-
 Route::get('/produit/{product:slug}', [ProductController::class, 'show'])->name('produit.show');
