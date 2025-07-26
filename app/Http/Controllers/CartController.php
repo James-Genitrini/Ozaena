@@ -151,5 +151,18 @@ class CartController extends Controller
 
         return redirect()->back()->with('success', 'Produit supprimé du panier.');
     }
+
+    public static function getCartCount()
+    {
+        $cart = session('cart', []); // Récupère le panier dans la session, tableau d’articles
+        $count = 0;
+
+        foreach ($cart as $item) {
+            $count += $item['quantity'] ?? 1;
+        }
+
+        return $count;
+    }
+
 }
 ;

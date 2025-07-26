@@ -57,19 +57,40 @@
             
     
             <div style="display: flex; align-items: center; gap: 1rem;">
-                <a href="{{ route('cart.show') }}" title="Panier"
-                    style="color: #F5F5F5; padding: 0.4rem; display: inline-flex; align-items: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                        style="width: 24px; height: 24px;">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993
-                         1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125
-                         0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1
-                         5.513 7.5h12.974c.576 0 1.059.435 1.119
-                         1.007ZM8.625 10.5a.375.375 0 1 1-.75 0
-                         .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0
-                         1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                    </svg>
-                </a>
+                <div style="position: relative; display: inline-block; color: #F5F5F5; padding: 0.4rem;">
+                    <a href="{{ route('cart.show') }}" title="Panier"
+                        style="color: inherit; display: inline-flex; align-items: center; position: relative;">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                            style="width: 24px; height: 24px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993
+                                             1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125
+                                             0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1
+                                             5.513 7.5h12.974c.576 0 1.059.435 1.119
+                                             1.007ZM8.625 10.5a.375.375 0 1 1-.75 0
+                                             .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0
+                                             1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                        </svg>
+                
+                        <!-- Badge nombre articles -->
+                        <span style="
+                                            position: absolute;
+                                            top: -6px;
+                                            right: -6px;
+                                            background-color: red;
+                                            color: white;
+                                            border-radius: 50%;
+                                            padding: 2px 6px;
+                                            font-size: 12px;
+                                            font-weight: bold;
+                                            line-height: 1;
+                                            min-width: 18px;
+                                            text-align: center;
+                                            ">
+                            {{ $cartCount }}
+                        </span>
+                    </a>
+                </div>
+                
     
                 @auth
                     <form action="{{ route('logout') }}" method="POST" style="display: inline;">
@@ -93,7 +114,7 @@
     </main>
 
     <footer style="background-color: #111; color: #ccc; padding: 2rem 1rem; text-align: left;">
-        <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 2rem; justify-content: flex-start;">
     
             <!-- Réseaux sociaux -->
             <div style="flex: 1 1 200px;">
@@ -125,12 +146,20 @@
             <!-- Mentions légales -->
             <div style="flex: 1 1 300px;">
                 <h3 style="color: #F5F5F5; margin-bottom: 1rem;">Mentions légales</h3>
-                <p>
-                    <a href="{{ route('mentions.legales') }}" style="color: #ccc; text-decoration: underline;">
-                        Voir les mentions légales
-                    </a>
-                </p>
+                <ul style="list-style: none; padding: 0; margin: 0; line-height: 1.8; display: block;">
+                    <li>
+                        <a href="{{ route('mentions.legales') }}" style="color: #ccc; text-decoration: underline;">
+                            Mentions légales
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('cgv') }}" style="color: #ccc; text-decoration: underline;">
+                            Conditions Générales de Vente
+                        </a>
+                    </li>
+                </ul>
             </div>
+
         </div>
     
         <div style="text-align: center; margin-top: 2rem; font-size: 0.875rem; color: #666;">
