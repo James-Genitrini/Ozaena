@@ -10,25 +10,35 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
     <style>
+        html,
         body {
+            height: 100%;
             margin: 0;
             padding: 0;
+        }
+    
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
             background-color: #0D0D0D;
             color: #F5F5F5;
             font-family: 'Inter', sans-serif;
         }
-
+    
         header,
         footer {
             text-align: center;
             padding: 1rem;
         }
-
+    
         main {
+            flex: 1;
             padding: 2rem;
             text-align: center;
         }
     </style>
+    
 
     @stack('styles')
 </head>
@@ -47,7 +57,8 @@
             
     
             <div style="display: flex; align-items: center; gap: 1rem;">
-                <button title="Panier" style="background: none; border: none; cursor: pointer; padding: 0.4rem; color: #F5F5F5;">
+                <a href="{{ route('cart.show') }}" title="Panier"
+                    style="color: #F5F5F5; padding: 0.4rem; display: inline-flex; align-items: center;">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                         style="width: 24px; height: 24px;">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993
@@ -58,7 +69,7 @@
                          .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0
                          1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                     </svg>
-                </button>
+                </a>
     
                 @auth
                     <form action="{{ route('logout') }}" method="POST" style="display: inline;">

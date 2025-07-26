@@ -181,7 +181,13 @@
             @endforeach
         </div>
 
-        <button id="addToCartBtn" class="btn-add-cart" disabled>Ajouter au panier</button>
+        <form id="addToCartForm" action="{{ route('cart.add', $product) }}" method="POST" class="w-full mt-4">
+            @csrf
+            <input type="hidden" name="quantity" value="1">
+            <input type="hidden" name="selected_size" id="selectedSizeInput">
+
+            <button type="submit" id="addToCartBtn" class="btn-add-cart" disabled>Ajouter au panier</button>
+        </form>
 
         <div class="product-details mt-6 space-y-4">
             <div class="accordion-section border border-gray-600 rounded">
@@ -224,11 +230,16 @@
             });
         });
 
-        addToCartBtn.addEventListener('click', () => {
-            if(!selectedSize) return alert('Veuillez sélectionner une taille');
+        addToCartBtn.addEventListener('click', (e) => {
+            if (!selectedSize) {
+                e.preventDefault();
+                alert('Veuillez sélectionner une taille');
+                return;
+            }
 
-            alert('Produit ajouté au panier: Taille ' + selectedSize);
+            document.getElementById('selectedSizeInput').value = selectedSize;
         });
+
 
         // Gestion active thumbnail (changer bordure)
         function setActiveThumbnail(el) {

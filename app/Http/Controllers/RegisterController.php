@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -34,6 +35,8 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('home')->with('status', 'Un email de vérification a été envoyé. Vérifiez votre boîte mail.');
+        Cart::create(['user_id' => $user->id]);
+
+        return redirect('/')->with('status', 'Un email de vérification a été envoyé. Vérifiez votre boîte mail.');
     }
 }

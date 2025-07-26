@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegisterController;
@@ -18,6 +19,13 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [RegisterController::class, 'register']);
+
+    Route::get('/panier', [CartController::class, 'show'])->name('cart.show');
+
+    Route::post('/panier/ajouter/{product}', [CartController::class, 'addProduct'])->name('cart.add');
+    Route::patch('/panier/modifier/{product}', [CartController::class, 'updateQuantity'])->name('cart.update');
+    Route::delete('/panier/supprimer/{product}', [CartController::class, 'removeProduct'])->name('cart.remove');
+
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
