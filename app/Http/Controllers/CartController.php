@@ -105,21 +105,45 @@ class CartController extends Controller
 
             $item->update(['quantity' => $validated['quantity']]);
 
+            // Recalculer total
+            $total = $cart->items->sum(fn($i) => $i->product->price * $i->quantity);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'cart_total' => $total
+                ]);
+            }
+
             return redirect()->back()->with('success', 'Quantité mise à jour.');
         }
 
         // Invité
-        $cart = collect(session('cart', []))->map(function ($item) use ($product, $validated) {
+        $cartItems = collect(session('cart', []))->map(function ($item) use ($product, $validated) {
             if ($item['product_id'] === $product->id && $item['size'] === $validated['selected_size']) {
                 $item['quantity'] = $validated['quantity'];
             }
             return $item;
         });
 
-        session(['cart' => $cart->toArray()]);
+        session(['cart' => $cartItems->toArray()]);
+
+        // Calculer le total pour les invités
+        $total = $cartItems->sum(function ($item) {
+            $product = Product::find($item['product_id']);
+            return $product ? $product->price * $item['quantity'] : 0;
+        });
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'cart_total' => $total
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Quantité mise à jour.');
     }
+
 
     public function removeProduct(Request $request, Product $product)
     {

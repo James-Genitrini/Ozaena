@@ -4,35 +4,6 @@
 
 @push('styles')
     <style>
-        .logo-container {
-            position: relative;
-            width: 13rem;
-            height: 13rem;
-            margin: 0 auto 2rem auto;
-            perspective: 1000px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transform: translateY(-2rem);
-        }
-
-        .logo-layer {
-            width: 60%;
-            height: 60%;
-            animation: spin 7s linear infinite;
-            transform-style: preserve-3d;
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotateY(0deg);
-            }
-
-            to {
-                transform: rotateY(360deg);
-            }
-        }
-
         .cart-table {
             width: 100%;
             border-collapse: collapse;
@@ -50,9 +21,8 @@
             border-bottom: 2px solid #666;
         }
 
-        .btn-update,
         .btn-remove {
-            background-color: #222;
+            background-color: #a00;
             color: #fff;
             padding: 0.4rem 0.8rem;
             border: none;
@@ -60,14 +30,6 @@
             cursor: pointer;
             font-weight: 600;
             transition: background-color 0.3s ease;
-        }
-
-        .btn-update:hover {
-            background-color: #444;
-        }
-
-        .btn-remove {
-            background-color: #a00;
         }
 
         .btn-remove:hover {
@@ -109,7 +71,7 @@
                 </thead>
                 <tbody>
                     @foreach ($cart->items as $item)
-                        <tr>
+                        <tr data-product-slug="{{ $item->product->slug }}" data-size="{{ $item->size }}">
                             <td>
                                 <a href="{{ route('produit.show', $item->product->slug) }}"
                                     class="font-semibold hover:underline text-white">
@@ -118,16 +80,17 @@
                             </td>
                             <td>{{ $item->size }}</td>
                             <td>
-                                <form method="POST" action="{{ route('cart.update', [$item->product]) }}" style="display:inline;">
+                                <form method="POST" action="{{ route('cart.update', [$item->product]) }}"
+                                    class="update-quantity-form" style="display:inline;">
                                     @csrf
                                     @method('PATCH')
                                     <input type="hidden" name="selected_size" value="{{ $item->size }}">
-                                    <input type="number" name="quantity" value="{{ $item->quantity }}" min="1" />
-                                    <button type="submit" class="btn-update" title="Mettre à jour la quantité">Modifier</button>
+                                    <input type="number" name="quantity" value="{{ $item->quantity }}" min="1"
+                                        class="quantity-input" />
                                 </form>
                             </td>
                             <td>€{{ number_format($item->product->price, 2) }}</td>
-                            <td>€{{ number_format($item->product->price * $item->quantity, 2) }}</td>
+                            <td class="item-total">€{{ number_format($item->product->price * $item->quantity, 2) }}</td>
                             <td>
                                 <form method="POST" action="{{ route('cart.remove', [$item->product]) }}" style="display:inline;">
                                     @csrf
@@ -142,7 +105,7 @@
                 <tfoot>
                     <tr>
                         <td colspan="4" class="text-right font-bold">Total général :</td>
-                        <td colspan="2" class="font-semibold">
+                        <td colspan="2" class="font-semibold" id="cart-grand-total">
                             €{{ number_format($cart->items->sum(fn($item) => $item->product->price * $item->quantity), 2) }}
                         </td>
                     </tr>
@@ -153,3 +116,63 @@
         @endif
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const forms = document.querySelectorAll('.update-quantity-form');
+
+            forms.forEach(form => {
+                const input = form.querySelector('.quantity-input');
+
+                input.addEventListener('change', function () {
+                    input.disabled = true;
+
+                    const url = form.getAttribute('action');
+                    const quantity = input.value;
+                    const size = form.querySelector('input[name="selected_size"]').value;
+                    const productSlug = form.closest('tr').dataset.productSlug;
+
+                    const formData = new FormData();
+                    formData.append('_method', 'PATCH');
+                    formData.append('_token', form.querySelector('input[name="_token"]').value);
+                    formData.append('quantity', quantity);
+                    formData.append('selected_size', size);
+
+                    fetch(url, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                        .then(response => {
+                            if (!response.ok) throw new Error('Erreur réseau');
+                            return response.json();
+                        })
+                        .then(data => {
+                            // Met à jour le total de la ligne
+                            const tr = form.closest('tr');
+                            const priceUnit = parseFloat(tr.querySelector('td:nth-child(4)').textContent.replace('€', '').replace(',', '.'));
+                            const newTotal = (priceUnit * quantity).toFixed(2);
+                            tr.querySelector('.item-total').textContent = `€${newTotal}`;
+
+                            // Met à jour le total général
+                            if (data.cart_total) {
+                                document.getElementById('cart-grand-total').textContent = `€${parseFloat(data.cart_total).toFixed(2)}`;
+                            }
+
+                            console.log('Quantité mise à jour avec succès', data);
+                        })
+                        .catch(error => {
+                            console.error('Erreur lors de la mise à jour:', error);
+                            alert('Erreur lors de la mise à jour de la quantité.');
+                        })
+                        .finally(() => {
+                            input.disabled = false;
+                        });
+                });
+            });
+        });
+    </script>
+@endpush
