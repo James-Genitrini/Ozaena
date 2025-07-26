@@ -92,10 +92,52 @@
         @yield('content')
     </main>
 
-    <footer>
-        <p>&copy; {{ date('Y') }} Ozæna</p>
-    </footer>
-
+    <footer style="background-color: #111; color: #ccc; padding: 2rem 1rem; text-align: left;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center;">
+    
+            <!-- Réseaux sociaux -->
+            <div style="flex: 1 1 200px;">
+                <h3 style="color: #F5F5F5; margin-bottom: 1rem;">Réseaux sociaux</h3>
+                <ul style="list-style: none; padding: 0; margin: 0; line-height: 1.8; display: flex; gap: 0.5rem;">
+                    <li>
+                        <a href="https://www.instagram.com/ozaena.co/" target="_blank" rel="noopener"
+                            style="color: #ccc; text-decoration: none; display: inline-flex; align-items: center; transition: color 0.3s;">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="24"
+                                height="24" aria-label="Instagram">
+                                <path
+                                    d="M7.75 2h8.5A5.75 5.75 0 0122 7.75v8.5A5.75 5.75 0 0116.25 22h-8.5A5.75 5.75 0 012 16.25v-8.5A5.75 5.75 0 017.75 2zm0 1.5A4.25 4.25 0 003.5 7.75v8.5A4.25 4.25 0 007.75 20.5h8.5a4.25 4.25 0 004.25-4.25v-8.5A4.25 4.25 0 0016.25 3.5h-8.5zm8.75 2a1 1 0 110 2 1 1 0 010-2zm-4.25 1.75a4.75 4.75 0 110 9.5 4.75 4.75 0 010-9.5zm0 1.5a3.25 3.25 0 100 6.5 3.25 3.25 0 000-6.5z" />
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+    
+            <!-- Contact -->
+            <div style="flex: 1 1 200px;">
+                <h3 style="color: #F5F5F5; margin-bottom: 1rem;">Contact</h3>
+                <p>Email : <a href="mailto:contact@ozæna.com"
+                        style="color: #ccc; text-decoration: none;">contact@ozæna.com</a></p>
+                <p>Téléphone : <a href="tel:+33123456789" style="color: #ccc; text-decoration: none;">+33 1 23 45 67 89</a>
+                </p>
+                <p>Adresse : 123 Rue Exemple, 75000 Paris, France</p>
+            </div>
+    
+            <!-- Mentions légales -->
+            <div style="flex: 1 1 300px;">
+                <h3 style="color: #F5F5F5; margin-bottom: 1rem;">Mentions légales</h3>
+                <p>
+                    <a href="{{ route('mentions.legales') }}" style="color: #ccc; text-decoration: underline;">
+                        Voir les mentions légales
+                    </a>
+                </p>
+            </div>
+        </div>
+    
+        <div style="text-align: center; margin-top: 2rem; font-size: 0.875rem; color: #666;">
+            &copy; {{ date('Y') }} Ozæna. Tous droits réservés.
+        </div>
+    </footer>    
+    
     @stack('scripts')
 </body>
 
