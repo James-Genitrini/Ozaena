@@ -2,6 +2,52 @@
 
 @section('title', 'Conditions Générales de Vente')
 
+@push('styles')
+    <style>
+        main {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 1rem 2rem;
+            /* border-radius: 6px;  <-- retiré */
+        }
+
+        h1 {
+            font-weight: 700;
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            color: #eee;
+            text-align: center;
+        }
+
+        h2 {
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #ddd;
+            padding-left: 0.75rem;
+        }
+
+        p {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: #ccc;
+            margin-bottom: 1.2rem;
+            text-align: justify;
+        }
+
+        a {
+            text-decoration: underline;
+        }
+
+        a:hover {
+            text-decoration: none;
+        }
+    </style>
+@endpush
+
+
+
 @section('content')
     <h1>Conditions Générales de Vente (CGV)</h1>
 

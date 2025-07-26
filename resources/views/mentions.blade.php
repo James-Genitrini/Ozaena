@@ -2,23 +2,66 @@
 
 @section('title', 'Mentions légales')
 
-@section('content')
-    <div class="max-w-4xl mx-auto text-left px-4 py-8" style="color: #ddd;">
-        <h1 class="text-3xl font-bold mb-6">Mentions légales</h1>
+@push('styles')
+    <style>
+        .legal-container {
+            max-width: 680px;
+            margin: 2rem auto;
+            padding: 1rem 1.5rem;
+            color: #ddd;
+            text-align: justify;
+            line-height: 1.6;
+            font-size: 1.05rem;
+        }
 
-        <p><strong>Éditeur du site :</strong><br>
+        .legal-container h1 {
+            font-weight: 700;
+            font-size: 2.25rem;
+            margin-bottom: 1.5rem;
+            color: #eee;
+            text-align: left;
+        }
+
+        .legal-container p {
+            margin-bottom: 1.2rem;
+        }
+
+        .legal-container strong {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+        }
+
+        .legal-container a {
+            color: #4ea1d3;
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+
+        .legal-container a:hover {
+            color: #7ec1f7;
+            text-decoration: none;
+        }
+    </style>
+@endpush
+
+@section('content')
+    <div class="legal-container">
+        <h1>Mentions légales</h1>
+
+        <p><strong>Éditeur du site :</strong>
             Ozæna SARL<br>
             SIRET : 123 456 789 00012<br>
             Adresse : 123 Rue Exemple, 75000 Paris<br>
-            Email : <a href="mailto:contact@ozæna.com" style="color: #4ea1d3;">contact@ozæna.com</a><br>
+            Email : <a href="mailto:contact@ozæna.com">contact@ozæna.com</a><br>
             Téléphone : +33 1 23 45 67 89
         </p>
 
-        <p><strong>Directeur de la publication :</strong><br>
+        <p><strong>Directeur de la publication :</strong>
             Jean Dupont
         </p>
 
-        <p><strong>Hébergeur :</strong><br>
+        <p><strong>Hébergeur :</strong>
             OVH SAS<br>
             2 rue Kellermann - 59100 Roubaix - France<br>
             Téléphone : 1007
