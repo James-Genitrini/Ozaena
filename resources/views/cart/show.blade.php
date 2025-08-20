@@ -66,15 +66,15 @@
                         <th>Quantité</th>
                         <th>Prix unitaire</th>
                         <th>Total</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($cart->items as $item)
                         <tr data-product-slug="{{ $item->product->slug }}" data-size="{{ $item->size }}">
-                            <td>
-                                <a href="{{ route('produit.show', $item->product->slug) }}"
-                                    class="font-semibold hover:underline text-white">
+                            <td class="flex items-center gap-4">
+                                <img src="{{ asset($item->product->main_image_front) }}" alt="{{ $item->product->name }}"
+                                    class="w-16 h-16 object-cover rounded" />
+                                <a href="{{ route('produit.show', $item->product->slug) }}" class="font-semibold hover:underline text-white">
                                     {{ $item->product->name }}
                                 </a>
                             </td>
@@ -91,14 +91,6 @@
                             </td>
                             <td>€{{ number_format($item->product->price, 2) }}</td>
                             <td class="item-total">€{{ number_format($item->product->price * $item->quantity, 2) }}</td>
-                            <td>
-                                <form method="POST" action="{{ route('cart.remove', [$item->product]) }}" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <input type="hidden" name="selected_size" value="{{ $item->size }}">
-                                    <button type="submit" class="btn-remove" title="Supprimer du panier">Supprimer</button>
-                                </form>
-                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -111,6 +103,16 @@
                     </tr>
                 </tfoot>
             </table>
+
+            @if ($cart && $cart->items->count() > 0)
+                <div class="mt-6 text-right">
+                    <a href="{{ route('checkout.show') }}"
+                        class="inline-block bg-green-600 hover:bg-green-800 text-white font-semibold py-2 px-4 rounded transition-colors">
+                        Passer au paiement
+                    </a>
+                </div>
+            @endif
+
         @else
             <p class="empty-cart">Votre panier est vide.</p>
         @endif

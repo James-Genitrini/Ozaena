@@ -8,7 +8,7 @@
             position: relative;
             width: 13rem;
             height: 13rem;
-            margin: 1rem auto 1.5rem auto; /* réduit l'espace au-dessus et en-dessous */
+            margin: 0 auto 1rem auto; /* réduit l'espace au-dessus et en-dessous */
             perspective: 1000px;
             display: flex;
             justify-content: center;
@@ -54,6 +54,25 @@
             }
         }
 
+        .slider-section {
+            height: 100vh; /* prend toute la hauteur de l'écran */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Slider interne pour remplir la section */
+        .slider-section .slider {
+            width: 100%;
+            max-width: 1024px;
+            height: 100%; /* rempli toute la section */
+            overflow: hidden;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: relative;
+        }
+
     </style>
 @endpush
 
@@ -63,7 +82,7 @@
         <img src="{{ asset('images/500_logo.png') }}" alt="Ozaena logo" class="logo-layer" />
     </div>
 
-    <div x-data="{
+    {{-- <div x-data="{
             activeSlide: 0,
             slides: [
                 '{{ asset('images/slide1.png') }}',
@@ -113,15 +132,16 @@
                 </div>
             </template>
         </div>
-    </div>
+    </div> --}}
 
-    <!-- Grille de produits -->
-    <div class="max-w-7xl mx-auto mt-16 px-6">
+    <div class="max-w-7xl mx-auto mt-12 mb-32 px-6"> <!-- mt-12 réduit l'espace au-dessus -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
             @foreach ($products as $product)
                 <x-product-card :product="$product" />
             @endforeach
         </div>
     </div>
+
+
 
 @endsection

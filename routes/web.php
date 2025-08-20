@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegisterController;
@@ -25,6 +26,10 @@ Route::middleware('guest')->group(function () {
     Route::post('/panier/ajouter/{product}', [CartController::class, 'addProduct'])->name('cart.add');
     Route::patch('/panier/modifier/{product}', [CartController::class, 'updateQuantity'])->name('cart.update');
     Route::delete('/panier/supprimer/{product}', [CartController::class, 'removeProduct'])->name('cart.remove');
+
+    Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout.show');
+    Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
+    Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success')->middleware('auth');
 
 });
 
