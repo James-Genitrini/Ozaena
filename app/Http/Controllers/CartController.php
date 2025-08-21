@@ -18,17 +18,17 @@ class CartController extends Controller
                 $cart = new Cart();
                 $cart->setRelation('items', collect());
             }
-
-            return view('cart.show', compact('cart'));
+        } else {
+            $cart = new Cart();
+            $cart->setRelation('items', collect());
         }
 
-        // Invité : panier stocké en session
+        // Toujours récupérer le panier en session pour le front-end
         $sessionItems = collect(session('cart', []))->map(function ($item) {
             $item['product'] = Product::find($item['product_id']);
             return (object) $item;
         });
 
-        $cart = new Cart();
         $cart->setRelation('items', $sessionItems);
 
         return view('cart.show', compact('cart'));
@@ -41,6 +41,7 @@ class CartController extends Controller
             'selected_size' => 'required|string|max:10',
         ]);
 
+        // Mise à jour DB si connecté
         if (Auth::check()) {
             $cart = Auth::user()->cart ?? Cart::create(['user_id' => Auth::id()]);
 
@@ -58,25 +59,23 @@ class CartController extends Controller
                     'quantity' => $validated['quantity'],
                 ]);
             }
-
-            return redirect()->back()->with('success', 'Produit ajouté au panier.');
         }
 
-        // Invité
-        $cart = session('cart', []);
-        $index = collect($cart)->search(fn($i) => $i['product_id'] === $product->id && $i['size'] === $validated['selected_size']);
+        // Mise à jour session
+        $cartSession = session('cart', []);
+        $index = collect($cartSession)->search(fn($i) => $i['product_id'] === $product->id && $i['size'] === $validated['selected_size']);
 
         if ($index !== false) {
-            $cart[$index]['quantity'] += $validated['quantity'];
+            $cartSession[$index]['quantity'] += $validated['quantity'];
         } else {
-            $cart[] = [
+            $cartSession[] = [
                 'product_id' => $product->id,
                 'size' => $validated['selected_size'],
                 'quantity' => $validated['quantity'],
             ];
         }
 
-        session(['cart' => $cart]);
+        session(['cart' => $cartSession]);
 
         return redirect()->back()->with('success', 'Produit ajouté au panier.');
     }
@@ -88,25 +87,20 @@ class CartController extends Controller
             'selected_size' => 'required|string|max:10',
         ]);
 
+        // Mise à jour DB si connecté
         if (Auth::check()) {
             $cart = Auth::user()->cart;
             $item = $cart->items()
                 ->where('product_id', $product->id)
                 ->where('size', $validated['selected_size'])
-                ->firstOrFail();
+                ->first();
 
-            $item->update(['quantity' => $validated['quantity']]);
-
-            $total = $cart->items->sum(fn($i) => $i->product->price * $i->quantity);
-
-            if ($request->ajax()) {
-                return response()->json(['success' => true, 'cart_total' => $total]);
+            if ($item) {
+                $item->update(['quantity' => $validated['quantity']]);
             }
-
-            return redirect()->back()->with('success', 'Quantité mise à jour.');
         }
 
-        // Invité
+        // Mise à jour session
         $cartItems = collect(session('cart', []))->map(function ($item) use ($product, $validated) {
             if ($item['product_id'] === $product->id && $item['size'] === $validated['selected_size']) {
                 $item['quantity'] = $validated['quantity'];
@@ -129,6 +123,7 @@ class CartController extends Controller
     {
         $validated = $request->validate(['selected_size' => 'required|string|max:10']);
 
+        // Mise à jour DB si connecté
         if (Auth::check()) {
             $cart = Auth::user()->cart;
             $item = $cart->items()
@@ -136,16 +131,14 @@ class CartController extends Controller
                 ->where('size', $validated['selected_size'])
                 ->first();
 
-            if ($item)
+            if ($item) {
                 $item->delete();
-
-            return redirect()->back()->with('success', 'Produit supprimé du panier.');
+            }
         }
 
-        // Invité
+        // Mise à jour session
         $cart = collect(session('cart', []))->reject(
-            fn($item) =>
-            $item['product_id'] === $product->id && $item['size'] === $validated['selected_size']
+            fn($item) => $item['product_id'] === $product->id && $item['size'] === $validated['selected_size']
         );
 
         session(['cart' => $cart->values()->toArray()]);

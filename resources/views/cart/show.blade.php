@@ -106,10 +106,17 @@
 
             @if ($cart && $cart->items->count() > 0)
                 <div class="mt-6 text-right">
-                    <a href="{{ route('checkout.show') }}"
-                        class="inline-block bg-green-600 hover:bg-green-800 text-white font-semibold py-2 px-4 rounded transition-colors">
-                        Passer au paiement
-                    </a>
+                    @auth
+                        <a href="{{ route('checkout.show') }}"
+                            class="inline-block bg-green-600 hover:bg-green-800 text-white font-semibold py-2 px-4 rounded transition-colors">
+                            Passer au paiement
+                        </a>
+                    @else
+                        <a href="{{ route('login', ['redirect' => route('checkout.show')]) }}"
+                            class="inline-block bg-green-600 hover:bg-green-800 text-white font-semibold py-2 px-4 rounded transition-colors">
+                            Passer au paiement
+                        </a>
+                    @endauth
                 </div>
             @endif
 

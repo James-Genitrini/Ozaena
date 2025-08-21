@@ -9,37 +9,29 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\Order;
-use App\Models\OrderItem;
 
 class CheckoutController extends Controller
 {
-    /**
-     * Récupère le panier de l'utilisateur ou de la session
-     */
     protected function getCart()
     {
-        if (Auth::check()) {
-            $cart = Auth::user()->cart()->with('items.product')->first();
+        $cart = Auth::user()->cart()->with('items.product')->first();
 
-            if (!$cart) {
-                $cart = new Cart();
-                $cart->setRelation('items', collect());
-            }
-        } else {
-            $sessionItems = collect(session('cart', []))->map(function ($item) {
-                $item['product'] = Product::find($item['product_id']);
-                return (object) $item;
-            });
+        if (!$cart) {
             $cart = new Cart();
-            $cart->setRelation('items', $sessionItems);
+            $cart->setRelation('items', collect());
         }
+
+        // Toujours utiliser la session pour le front-end
+        $sessionItems = collect(session('cart', []))->map(function ($item) {
+            $item['product'] = Product::find($item['product_id']);
+            return (object) $item;
+        });
+
+        $cart->setRelation('items', $sessionItems);
 
         return $cart;
     }
 
-    /**
-     * Affiche la page de checkout
-     */
     public function show()
     {
         $cart = $this->getCart();
@@ -51,18 +43,13 @@ class CheckoutController extends Controller
         return view('checkout.show', compact('cart'));
     }
 
-    /**
-     * Traitement du checkout et création de la session Stripe
-     */
     public function process(Request $request)
     {
-        // Validation des informations de livraison
         $validated = $request->validate([
             'address' => 'required|string|max:255',
             'postal_code' => 'required|string|max:10',
             'city' => 'required|string|max:100',
             'country' => 'required|in:FR',
-            'email' => 'required_if:auth,0|email',
         ]);
 
         $cart = $this->getCart();
@@ -71,7 +58,7 @@ class CheckoutController extends Controller
             return redirect()->route('cart.show')->with('error', 'Votre panier est vide.');
         }
 
-        // Calcul des lignes pour Stripe
+        // Préparer les lignes Stripe
         $lineItems = [];
         foreach ($cart->items as $item) {
             $lineItems[] = [
@@ -80,22 +67,49 @@ class CheckoutController extends Controller
                     'product_data' => [
                         'name' => $item->product->name . ($item->size ? " (Taille: {$item->size})" : ''),
                     ],
-                    'unit_amount' => intval($item->product->price * 100),
+                    'unit_amount' => round($item->product->price * 100),
                 ],
                 'quantity' => $item->quantity,
             ];
         }
 
-        // Création de la commande avant Stripe
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+
+        $session = StripeSession::create([
+            'payment_method_types' => ['card'],
+            'line_items' => $lineItems,
+            'mode' => 'payment',
+            'customer_email' => Auth::user()->email,
+            'success_url' => route('checkout.success'), // la commande sera créée ici
+            'cancel_url' => route('checkout.show'),
+        ]);
+
+        // Stocker temporairement l'adresse pour la commande
+        session(['checkout_address' => $validated]);
+
+        return redirect($session->url);
+    }
+
+    public function success(Request $request)
+    {
+        $cart = $this->getCart();
+
+        if ($cart->items->count() === 0) {
+            return redirect()->route('cart.show')->with('error', 'Votre panier est vide.');
+        }
+
+        $address = session('checkout_address', []);
+
+        // Créer la commande uniquement après paiement réussi
         $orderTotal = $cart->items->sum(fn($i) => $i->product->price * $i->quantity);
 
         $order = Order::create([
             'user_id' => Auth::id(),
-            'status' => 'pending',
-            'address' => $validated['address'],
-            'postal_code' => $validated['postal_code'],
-            'city' => $validated['city'],
-            'country' => $validated['country'],
+            'status' => 'paid',
+            'address' => $address['address'] ?? '',
+            'postal_code' => $address['postal_code'] ?? '',
+            'city' => $address['city'] ?? '',
+            'country' => $address['country'] ?? '',
             'total' => $orderTotal,
         ]);
 
@@ -108,47 +122,13 @@ class CheckoutController extends Controller
             ]);
         }
 
-        // Stocker temporairement l'ID de la commande pour le succès Stripe
-        session(['checkout_order_id' => $order->id]);
-
-        // Stripe
-        Stripe::setApiKey(env('STRIPE_SECRET'));
-
-        $session = StripeSession::create([
-            'payment_method_types' => ['card'],
-            'line_items' => $lineItems,
-            'mode' => 'payment',
-            'customer_email' => Auth::check() ? Auth::user()->email : $validated['email'],
-            'success_url' => route('checkout.success'),
-            'cancel_url' => route('checkout.show'),
-        ]);
-
-        return redirect($session->url);
-    }
-
-    /**
-     * Page de succès Stripe
-     */
-    public function success()
-    {
-        $orderId = session('checkout_order_id');
-
-        if ($orderId) {
-            $order = Order::find($orderId);
-            if ($order) {
-                $order->update(['status' => 'paid']);
-            }
-
-            // Vider le panier
-            if (Auth::check() && Auth::user()->cart) {
-                Auth::user()->cart->items()->delete();
-            } else {
-                session()->forget('cart');
-            }
-
-            session()->forget('checkout_order_id');
+        // Vider le panier
+        if (Auth::user()->cart) {
+            Auth::user()->cart->items()->delete();
         }
+        session()->forget('cart');
+        session()->forget('checkout_address');
 
-        return view('checkout.success');
+        return view('checkout.success', compact('order'));
     }
 }

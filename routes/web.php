@@ -15,24 +15,21 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 
 Auth::routes(['verify' => true]);
 
-Route::middleware('guest')->group(function () {
-    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [LoginController::class, 'login']);
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
 
-    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [RegisterController::class, 'register']);
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
 
-    Route::get('/panier', [CartController::class, 'show'])->name('cart.show');
+Route::get('/panier', [CartController::class, 'show'])->name('cart.show');
 
-    Route::post('/panier/ajouter/{product}', [CartController::class, 'addProduct'])->name('cart.add');
-    Route::patch('/panier/modifier/{product}', [CartController::class, 'updateQuantity'])->name('cart.update');
-    Route::delete('/panier/supprimer/{product}', [CartController::class, 'removeProduct'])->name('cart.remove');
+Route::post('/panier/ajouter/{product}', [CartController::class, 'addProduct'])->name('cart.add');
+Route::patch('/panier/modifier/{product}', [CartController::class, 'updateQuantity'])->name('cart.update');
+Route::delete('/panier/supprimer/{product}', [CartController::class, 'removeProduct'])->name('cart.remove');
 
-    Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout.show');
-    Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
-    Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success')->middleware('auth');
-
-});
+Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout.show');
+Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
+Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success')->middleware('auth');
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
