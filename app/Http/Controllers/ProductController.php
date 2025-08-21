@@ -9,13 +9,13 @@ class ProductController extends Controller
 {
     public function show(Product $product)
     {
-        $stocks = $product->stocks;
         $images = $product->images;
-
+        $sizes = $product->sizes;
+        
         return view('product.show', [
             'product' => $product,
-            'stocks' => $stocks,
             'images' => $images,
+            'sizes' => $sizes,
         ]);
     }
 }

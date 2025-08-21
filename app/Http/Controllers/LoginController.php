@@ -23,8 +23,9 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/');
+            return redirect('/'); // <- redirige toujours vers /
         }
+
 
         return back()->withErrors([
             'email' => 'Les identifiants ne correspondent pas.',

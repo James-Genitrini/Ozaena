@@ -91,7 +91,17 @@
                         </span>
                     </a>
                 </div>
-                
+
+                {{-- Si admin => bouton Dashboard --}}
+                @auth
+                    @if(Auth::user()->is_admin)
+                        <a href="{{ route('admin.dashboard') }}" style="color: #0D0D0D; background: #F5F5F5; padding: 0.4rem 0.8rem;
+                                                border-radius: 6px; font-weight: 600; text-decoration: none;">
+                            Dashboard
+                        </a>
+                    @endif
+                @endauth
+
     
                 @auth
                     <form action="{{ route('logout') }}" method="POST" style="display: inline;">

@@ -157,13 +157,13 @@
             <!-- Tailles -->
             <h3 class="font-semibold mb-2">Choisissez votre taille</h3>
             <div class="sizes flex gap-2 mb-4">
-                @foreach($stocks as $stock)
-                    <button type="button" class="size-btn {{ $stock->quantity <= 0 ? 'disabled' : '' }}"
-                        data-size="{{ $stock->size }}" @if($stock->quantity <= 0) disabled @endif>
-                        {{ $stock->size }}
+                @foreach($product->sizes as $size)
+                    <button type="button" class="size-btn" data-size="{{ $size->size }}">
+                        {{ $size->size }}
                     </button>
                 @endforeach
             </div>
+
 
             <!-- Formulaire -->
             <form id="addToCartForm" action="{{ route('cart.add', $product) }}" method="POST" class="space-y-4">

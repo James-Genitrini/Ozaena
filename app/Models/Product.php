@@ -16,11 +16,6 @@ class Product extends Model
         'price',
     ];
 
-    public function stocks(): HasMany
-    {
-        return $this->hasMany(Stock::class);
-    }
-
     public function images(): HasMany
     {
         return $this->hasMany(Image::class);
@@ -29,6 +24,11 @@ class Product extends Model
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    public function sizes()
+    {
+        return $this->hasMany(ProductSize::class);
     }
 
 }

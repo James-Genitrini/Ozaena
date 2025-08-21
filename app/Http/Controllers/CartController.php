@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
-use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +14,6 @@ class CartController extends Controller
         if (Auth::check()) {
             $cart = Auth::user()->cart()->with('items.product')->first();
 
-            // Si pas encore de panier en base, on crée un "panier vide" pour éviter les erreurs en vue
             if (!$cart) {
                 $cart = new Cart();
                 $cart->setRelation('items', collect());
@@ -24,13 +22,12 @@ class CartController extends Controller
             return view('cart.show', compact('cart'));
         }
 
-        // Pour invité, on construit un "panier fake" depuis la session
+        // Invité : panier stocké en session
         $sessionItems = collect(session('cart', []))->map(function ($item) {
             $item['product'] = Product::find($item['product_id']);
             return (object) $item;
         });
 
-        // Créer un objet Cart temporaire avec la collection items pour uniformiser l'accès en vue
         $cart = new Cart();
         $cart->setRelation('items', $sessionItems);
 
@@ -45,7 +42,6 @@ class CartController extends Controller
         ]);
 
         if (Auth::check()) {
-            // Si l'utilisateur n'a pas encore de panier, on le crée
             $cart = Auth::user()->cart ?? Cart::create(['user_id' => Auth::id()]);
 
             $item = $cart->items()
@@ -66,12 +62,9 @@ class CartController extends Controller
             return redirect()->back()->with('success', 'Produit ajouté au panier.');
         }
 
-        // Invité : stockage en session
+        // Invité
         $cart = session('cart', []);
-
-        $index = collect($cart)->search(function ($i) use ($product, $validated) {
-            return $i['product_id'] === $product->id && $i['size'] === $validated['selected_size'];
-        });
+        $index = collect($cart)->search(fn($i) => $i['product_id'] === $product->id && $i['size'] === $validated['selected_size']);
 
         if ($index !== false) {
             $cart[$index]['quantity'] += $validated['quantity'];
@@ -97,7 +90,6 @@ class CartController extends Controller
 
         if (Auth::check()) {
             $cart = Auth::user()->cart;
-
             $item = $cart->items()
                 ->where('product_id', $product->id)
                 ->where('size', $validated['selected_size'])
@@ -105,14 +97,10 @@ class CartController extends Controller
 
             $item->update(['quantity' => $validated['quantity']]);
 
-            // Recalculer total
             $total = $cart->items->sum(fn($i) => $i->product->price * $i->quantity);
 
             if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'cart_total' => $total
-                ]);
+                return response()->json(['success' => true, 'cart_total' => $total]);
             }
 
             return redirect()->back()->with('success', 'Quantité mise à jour.');
@@ -128,48 +116,37 @@ class CartController extends Controller
 
         session(['cart' => $cartItems->toArray()]);
 
-        // Calculer le total pour les invités
-        $total = $cartItems->sum(function ($item) {
-            $product = Product::find($item['product_id']);
-            return $product ? $product->price * $item['quantity'] : 0;
-        });
+        $total = $cartItems->sum(fn($item) => Product::find($item['product_id'])->price * $item['quantity']);
 
         if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'cart_total' => $total
-            ]);
+            return response()->json(['success' => true, 'cart_total' => $total]);
         }
 
         return redirect()->back()->with('success', 'Quantité mise à jour.');
     }
 
-
     public function removeProduct(Request $request, Product $product)
     {
-        $validated = $request->validate([
-            'selected_size' => 'required|string|max:10',
-        ]);
+        $validated = $request->validate(['selected_size' => 'required|string|max:10']);
 
         if (Auth::check()) {
             $cart = Auth::user()->cart;
-
             $item = $cart->items()
                 ->where('product_id', $product->id)
                 ->where('size', $validated['selected_size'])
                 ->first();
 
-            if ($item) {
+            if ($item)
                 $item->delete();
-            }
 
             return redirect()->back()->with('success', 'Produit supprimé du panier.');
         }
 
         // Invité
-        $cart = collect(session('cart', []))->reject(function ($item) use ($product, $validated) {
-            return $item['product_id'] === $product->id && $item['size'] === $validated['selected_size'];
-        });
+        $cart = collect(session('cart', []))->reject(
+            fn($item) =>
+            $item['product_id'] === $product->id && $item['size'] === $validated['selected_size']
+        );
 
         session(['cart' => $cart->values()->toArray()]);
 
@@ -178,15 +155,7 @@ class CartController extends Controller
 
     public static function getCartCount()
     {
-        $cart = session('cart', []); // Récupère le panier dans la session, tableau d’articles
-        $count = 0;
-
-        foreach ($cart as $item) {
-            $count += $item['quantity'] ?? 1;
-        }
-
-        return $count;
+        $cart = session('cart', []);
+        return collect($cart)->sum(fn($item) => $item['quantity'] ?? 1);
     }
-
 }
-;
