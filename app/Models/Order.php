@@ -16,7 +16,12 @@ class Order extends Model
         'postal_code',
         'city',
         'country',
-        'total'
+        'total',
+        'first_name',
+        'last_name',
+        'email',
+        'phone',
+        'delivery_note',
     ];
 
     public function items()

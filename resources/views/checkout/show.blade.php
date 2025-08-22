@@ -4,140 +4,245 @@
 
 @push('styles')
     <style>
-        body {
-            background-color: #111;
+        .checkout-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 2rem auto;
             color: #ddd;
         }
 
-        .checkout-container {
-            max-width: 700px;
-            margin: 3rem auto;
-            padding: 2rem;
-            background-color: #1a1a1a;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        .column {
+            flex: 1 1 350px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-width: 280px;
         }
 
-        .checkout-container h1 {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .checkout-form label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .checkout-form input,
-        .checkout-form select {
-            width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 1rem;
-            border-radius: 6px;
-            border: 1px solid #555;
+        .checkout-box {
             background-color: #222;
+            padding: 1rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .checkout-box h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #555;
+            padding-bottom: 0.3rem;
+        }
+
+        .checkout-box input,
+        .checkout-box select {
+            width: 100%;
+            padding: 0.7rem;
+            border-radius: 6px;
+            border: 1px solid #666;
+            background-color: #2a2a2a;
             color: #fff;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            transition: border 0.2s, background-color 0.2s;
+        }
+
+        .checkout-box input:focus,
+        .checkout-box select:focus {
+            border-color: #0a84ff;
+            background-color: #333;
+            outline: none;
         }
 
         .btn-checkout {
-            display: block;
-            width: 100%;
-            background-color: #0a84ff;
-            color: #fff;
             padding: 0.75rem;
             font-weight: 700;
             border-radius: 8px;
             border: none;
+            background-color: #0a84ff;
+            color: #fff;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s;
+            margin-top: 1rem;
         }
 
         .btn-checkout:hover {
             background-color: #0066cc;
         }
 
-        .cart-summary {
-            background-color: #222;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-        }
-
         .cart-summary ul {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
 
         .cart-summary li {
             display: flex;
             justify-content: space-between;
-            padding: 0.5rem 0;
+            padding: 0.4rem 0;
             border-bottom: 1px solid #444;
         }
 
         .cart-summary li:last-child {
-            border-bottom: none;
             font-weight: bold;
+            border-bottom: none;
         }
 
-        .errors {
+        .text-warning {
+            color: #f0c000;
             margin-top: 1rem;
-            color: #ff4d4f;
+        }
+
+        @media(max-width: 900px) {
+            .checkout-container {
+                flex-direction: column;
+            }
         }
     </style>
 @endpush
 
 @section('content')
     <div class="checkout-container">
-        <h1>Validation de votre panier</h1>
-
-        <div class="cart-summary">
-            <h2 class="mb-2">Récapitulatif</h2>
-            <ul>
-                @foreach ($cart->items as $item)
-                    <li>
-                        <span>{{ $item->product->name }} ({{ $item->size }}) x {{ $item->quantity }}</span>
-                        <span>€{{ number_format($item->product->price * $item->quantity, 2) }}</span>
-                    </li>
-                @endforeach
-                <li>
-                    <span>Total</span>
-                    <span>€{{ number_format($cart->items->sum(fn($i) => $i->product->price * $i->quantity), 2) }}</span>
-                </li>
-            </ul>
+        <!-- Colonne 1: Infos personnelles -->
+        <div class="column">
+            <div class="checkout-box">
+                <h3>Informations personnelles</h3>
+                <input type="text" name="first_name" placeholder="Prénom" required>
+                <input type="text" name="last_name" placeholder="Nom" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="text" name="phone" placeholder="Téléphone" required>
+            </div>
         </div>
 
-        <form action="{{ route('checkout.process') }}" method="POST" class="checkout-form">
-            @csrf
-
-            <label for="address">Adresse</label>
-            <input type="text" name="address" id="address" value="{{ old('address') }}" required>
-
-            <label for="postal_code">Code postal</label>
-            <input type="text" name="postal_code" id="postal_code" value="{{ old('postal_code') }}" required>
-
-            <label for="city">Ville</label>
-            <input type="text" name="city" id="city" value="{{ old('city') }}" required>
-
-            <label for="country">Pays</label>
-            <select name="country" id="country" required>
-                <option value="FR" selected>France</option>
-            </select>
-
-            <button type="submit" class="btn-checkout">Payer avec Stripe</button>
-        </form>
-
-        @if ($errors->any())
-            <div class="errors">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+        <!-- Colonne 2: Livraison -->
+        <div class="column">
+            <div class="checkout-box" style="position: relative;">
+                <h3>Adresse de livraison</h3>
+                <div class="autocomplete">
+                    <input type="text" name="address" id="address" placeholder="Adresse" required>
+                    <div id="address-suggestions" class="suggestions"></div>
+                </div>
+                <input type="text" name="postal_code" id="postal_code" placeholder="Code postal" required>
+                <input type="text" name="city" id="city" placeholder="Ville" required>
+                <select name="country" id="country" required>
+                    <option value="FR" selected>France</option>
+                </select>
             </div>
-        @endif
+        </div>
+
+        <!-- Colonne 3: Récap + paiement -->
+        <div class="column">
+            <div class="checkout-box cart-summary">
+                <h3>Récapitulatif du panier</h3>
+                <ul>
+                    @foreach ($cart->items as $item)
+                        <li>
+                            <span>{{ $item->product->name }} x {{ $item->quantity }}</span>
+                            <span>€{{ number_format($item->product->price * $item->quantity, 2) }}</span>
+                        </li>
+                    @endforeach
+                    <li>
+                        <span>Total</span>
+                        <span>€{{ number_format($cart->items->sum(fn($i) => $i->product->price * $i->quantity), 2) }}</span>
+                    </li>
+                </ul>
+                <p class="text-warning">
+                    ⚠️ Tous les produits sont en <strong>précommande</strong>.
+                </p>
+                <button type="submit" class="btn-checkout">Payer avec Stripe</button>
+            </div>
+        </div>
     </div>
+
+    {{-- JS Autocomplete adresse (inchangé) --}}
+    <script>
+        (() => {
+            const addressInput = document.getElementById('address');
+            const suggestionsBox = document.getElementById('address-suggestions');
+            const postal = document.getElementById('postal_code');
+            const city = document.getElementById('city');
+
+            let activeIndex = -1;
+            let items = [];
+            let controller = null;
+            let debounceTimer = null;
+
+            function clearSuggestions() {
+                suggestionsBox.innerHTML = '';
+                suggestionsBox.style.display = 'none';
+                items = [];
+                activeIndex = -1;
+            }
+
+            function renderSuggestions(features) {
+                suggestionsBox.innerHTML = '';
+                items = features.map((f, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.textContent = f.properties.label;
+                    div.addEventListener('mousedown', e => { e.preventDefault(); chooseFeature(f); });
+                    suggestionsBox.appendChild(div);
+                    return { el: div, feature: f };
+                });
+                suggestionsBox.style.display = items.length ? 'block' : 'none';
+            }
+
+            function chooseFeature(f) {
+                addressInput.value = f.properties.street || '';
+                if (postal) postal.value = f.properties.postcode || '';
+                if (city) city.value = f.properties.city || '';
+                clearSuggestions();
+            }
+
+
+            function setActive(index) {
+                if (!items.length) return;
+                items.forEach((it, i) => it.el.setAttribute('aria-selected', i === index ? 'true' : 'false'));
+                activeIndex = index;
+                const activeEl = items[index]?.el;
+                if (activeEl) {
+                    const rect = activeEl.getBoundingClientRect();
+                    const parentRect = suggestionsBox.getBoundingClientRect();
+                    if (rect.bottom > parentRect.bottom) activeEl.scrollIntoView(false);
+                    if (rect.top < parentRect.top) activeEl.scrollIntoView();
+                }
+            }
+
+            async function fetchAddresses(q) {
+                if (controller) controller.abort();
+                controller = new AbortController();
+                try {
+                    const res = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(q)}&limit=5`, { signal: controller.signal });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+                    renderSuggestions(data.features || []);
+                } catch (e) { if (e.name !== 'AbortError') clearSuggestions(); }
+            }
+
+            addressInput.addEventListener('input', () => {
+                const q = addressInput.value.trim();
+                clearTimeout(debounceTimer);
+                if (q.length < 3) { clearSuggestions(); return; }
+                debounceTimer = setTimeout(() => fetchAddresses(q), 220);
+            });
+
+            addressInput.addEventListener('keydown', e => {
+                if (suggestionsBox.style.display !== 'block') return;
+                if (e.key === 'ArrowDown') { e.preventDefault(); setActive(activeIndex < items.length - 1 ? activeIndex + 1 : 0); }
+                else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(activeIndex > 0 ? activeIndex - 1 : items.length - 1); }
+                else if (e.key === 'Enter') { if (activeIndex >= 0 && items[activeIndex]) { e.preventDefault(); chooseFeature(items[activeIndex].feature); } }
+                else if (e.key === 'Escape') { clearSuggestions(); }
+            });
+
+            document.addEventListener('click', e => {
+                if (!addressInput.contains(e.target) && !suggestionsBox.contains(e.target)) clearSuggestions();
+            });
+
+            addressInput.addEventListener('blur', () => setTimeout(clearSuggestions, 120));
+        })();
+    </script>
 @endsection

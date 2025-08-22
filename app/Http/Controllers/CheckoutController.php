@@ -14,14 +14,14 @@ class CheckoutController extends Controller
 {
     protected function getCart()
     {
-        $cart = Auth::user()->cart()->with('items.product')->first();
+        $cart = Auth::user()?->cart()->with('items.product')->first();
 
         if (!$cart) {
             $cart = new Cart();
             $cart->setRelation('items', collect());
         }
 
-        // Toujours utiliser la session pour le front-end
+        // Utiliser la session pour le front
         $sessionItems = collect(session('cart', []))->map(function ($item) {
             $item['product'] = Product::find($item['product_id']);
             return (object) $item;
@@ -46,6 +46,10 @@ class CheckoutController extends Controller
     public function process(Request $request)
     {
         $validated = $request->validate([
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'email' => 'required|email',
+            'phone' => 'nullable|string|max:20',
             'address' => 'required|string|max:255',
             'postal_code' => 'required|string|max:10',
             'city' => 'required|string|max:100',
@@ -79,13 +83,13 @@ class CheckoutController extends Controller
             'payment_method_types' => ['card'],
             'line_items' => $lineItems,
             'mode' => 'payment',
-            'customer_email' => Auth::user()->email,
-            'success_url' => route('checkout.success'), // la commande sera créée ici
+            'customer_email' => $validated['email'],
+            'success_url' => route('checkout.success'),
             'cancel_url' => route('checkout.show'),
         ]);
 
-        // Stocker temporairement l'adresse pour la commande
-        session(['checkout_address' => $validated]);
+        // Stocker temporairement toutes les infos client
+        session(['checkout_data' => $validated]);
 
         return redirect($session->url);
     }
@@ -98,19 +102,24 @@ class CheckoutController extends Controller
             return redirect()->route('cart.show')->with('error', 'Votre panier est vide.');
         }
 
-        $address = session('checkout_address', []);
+        $data = session('checkout_data', []);
 
-        // Créer la commande uniquement après paiement réussi
+        // Créer la commande uniquement après paiement
         $orderTotal = $cart->items->sum(fn($i) => $i->product->price * $i->quantity);
 
         $order = Order::create([
             'user_id' => Auth::id(),
+            'first_name' => $data['first_name'] ?? '',
+            'last_name' => $data['last_name'] ?? '',
+            'email' => $data['email'] ?? '',
+            'phone' => $data['phone'] ?? '',
+            'address' => $data['address'] ?? '',
+            'postal_code' => $data['postal_code'] ?? '',
+            'city' => $data['city'] ?? '',
+            'country' => $data['country'] ?? 'FR',
             'status' => 'paid',
-            'address' => $address['address'] ?? '',
-            'postal_code' => $address['postal_code'] ?? '',
-            'city' => $address['city'] ?? '',
-            'country' => $address['country'] ?? '',
             'total' => $orderTotal,
+            'delivery_note' => 'Précommande - délai dépendant du fournisseur',
         ]);
 
         foreach ($cart->items as $item) {
@@ -122,12 +131,12 @@ class CheckoutController extends Controller
             ]);
         }
 
-        // Vider le panier
-        if (Auth::user()->cart) {
+        // Nettoyage
+        if (Auth::user()?->cart) {
             Auth::user()->cart->items()->delete();
         }
         session()->forget('cart');
-        session()->forget('checkout_address');
+        session()->forget('checkout_data');
 
         return view('checkout.success', compact('order'));
     }
