@@ -28,7 +28,7 @@ return new class extends Migration {
             // Infos commande
             $table->string('status')->default('pending');
             $table->decimal('total', 10, 2);
-            $table->text('delivery_note')->nullable()->default('Précommande - délai dépendant du fournisseur');
+            $table->text('delivery_note')->nullable();
 
             $table->timestamps();
         });

@@ -4,18 +4,26 @@
 
 @push('styles')
     <style>
+        /* Container principal */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 80vh;
+            padding: 2rem 1rem;
+            gap: 3rem;
+        }
+
+        /* Logo centré */
         .logo-container {
-            position: relative;
             width: 13rem;
             height: 13rem;
-            margin: 0 auto 1rem auto; /* réduit l'espace au-dessus et en-dessous */
             perspective: 1000px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* Animation du logo */
         .logo-layer {
             width: 60%;
             height: 60%;
@@ -27,121 +35,70 @@
             from {
                 transform: rotateY(0deg);
             }
+
             to {
                 transform: rotateY(360deg);
             }
         }
 
-        /* Slider */
-        [x-data] {
-            max-width: 1024px; /* limite la largeur */
-            margin: 0 auto 3rem auto; /* plus d'espace entre slider et produits */
-            overflow: hidden;
-            border-radius: 1rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            height: 20rem; /* hauteur par défaut, ajustable selon écran */
+        /* Bundle en haut */
+        .product-bundle {
+            width: 100%;
+            max-width: 600px;
+            /* plus gros sur desktop */
+            margin-bottom: 2rem;
         }
 
-        @media (min-width: 768px) {
-            [x-data] {
-                height: 24rem;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            [x-data] {
-                height: 32rem;
-            }
-        }
-
-        .slider-section {
-            height: 100vh; /* prend toute la hauteur de l'écran */
+        /* Container pour les deux autres produits */
+        .product-row {
             display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
             justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        /* Slider interne pour remplir la section */
-        .slider-section .slider {
             width: 100%;
             max-width: 1024px;
-            height: 100%; /* rempli toute la section */
-            overflow: hidden;
-            border-radius: 1rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            position: relative;
         }
 
+        .product-single {
+            flex: 1 1 45%;
+            max-width: 280px;
+        }
+
+        @media(min-width: 768px) {
+            .product-single {
+                flex: 1 1 45%;
+            }
+        }
     </style>
 @endpush
 
 @section('content')
-    <!-- Logo -->
-    <div class="logo-container">
-        <img src="{{ asset('images/500_logo.png') }}" alt="Ozaena logo" class="logo-layer" />
-    </div>
+    <div class="main-content">
+        <!-- Logo -->
+        <div class="logo-container">
+            <img src="{{ asset('images/500_logo.png') }}" alt="Ozaena logo" class="logo-layer" />
+        </div>
 
-    {{-- <div x-data="{
-            activeSlide: 0,
-            slides: [
-                '{{ asset('images/slide1.png') }}',
-                '{{ asset('images/slide2.png') }}'
-            ],
-            init() {
-                this.interval = setInterval(() => {
-                    this.activeSlide = (this.activeSlide + 1) % this.slides.length
-                }, 5000)
-            },
-            // Fonction pour stopper l'auto-slide si on survole
-            stop() {
-                clearInterval(this.interval)
-            },
-            start() {
-                this.init()
-            }
-        }" @mouseenter="stop()" @mouseleave="start()"
-        class="relative w-full max-w-4xl mx-auto overflow-hidden rounded-2xl shadow-lg h-64 md:h-96 lg:h-[32rem]">
-
-
-        <template x-for="(slide, index) in slides" :key="index">
-            <div x-show="activeSlide === index" x-transition:enter="transition-opacity duration-700"
-                x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-                x-transition:leave="transition-opacity duration-700" x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0" class="absolute inset-0">
-
-                <img :src="slide" alt="Slide" class="w-full h-full object-cover">
+        <!-- Gros bundle -->
+        @if(isset($products[0]))
+            <div class="product-bundle">
+                <x-product-card :product="$products[0]" />
             </div>
-        </template>
+        @endif
 
-        <!-- Flèches -->
-        <button @click="activeSlide = activeSlide === 0 ? slides.length - 1 : activeSlide - 1"
-            class="absolute top-1/2 left-3 -translate-y-1/2 bg-white/70 hover:bg-white rounded-full p-2 shadow">
-            ‹
-        </button>
-        <button @click="activeSlide = activeSlide === slides.length - 1 ? 0 : activeSlide + 1"
-            class="absolute top-1/2 right-3 -translate-y-1/2 bg-white/70 hover:bg-white rounded-full p-2 shadow">
-            ›
-        </button>
-
-        <!-- Points -->
-        <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex space-x-2">
-            <template x-for="(slide, index) in slides" :key="index">
-                <div @click="activeSlide = index" class="w-3 h-3 rounded-full cursor-pointer"
-                    :class="activeSlide === index ? 'bg-white' : 'bg-gray-400/70'">
+        <!-- Ligne des deux produits -->
+        <div class="product-row">
+            @if(isset($products[1]))
+                <div class="product-single">
+                    <x-product-card :product="$products[1]" />
                 </div>
-            </template>
-        </div>
-    </div> --}}
+            @endif
 
-    <div class="max-w-7xl mx-auto mt-12 mb-32 px-6"> <!-- mt-12 réduit l'espace au-dessus -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-            @foreach ($products as $product)
-                <x-product-card :product="$product" />
-            @endforeach
+            @if(isset($products[2]))
+                <div class="product-single">
+                    <x-product-card :product="$products[2]" />
+                </div>
+            @endif
         </div>
     </div>
-
-
-
 @endsection

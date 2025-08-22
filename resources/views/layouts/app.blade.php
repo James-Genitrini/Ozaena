@@ -37,10 +37,7 @@
             flex: 1;
             padding: 2rem;
             text-align: center;
-            display: flex;
-            justify-content: center; /* pour centrer le container */
         }
-
     </style>
     
 

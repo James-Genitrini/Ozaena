@@ -11,6 +11,16 @@ class ProductsSeeder extends Seeder
     public function run()
     {
         $productsData = [
+            // 1️⃣ Bundle en premier
+            [
+                'name' => 'Bundle Kimono + T-shirt',
+                'slug' => 'bundle-kimono-tshirt',
+                'main_image_front' => 'images/bundle_front.png', // image du bundle
+                'main_image_back' => 'images/bundle_back.png',
+                'description' => 'Bundle incluant le Kimono Japonais et le T-shirt Tokyo à prix spécial.',
+                'price' => 145.00, // prix réduit par rapport à l'achat séparé
+            ],
+            // 2️⃣ Kimono Japonais
             [
                 'name' => 'Kimono Japonais',
                 'slug' => 'kimono-japonais',
@@ -19,6 +29,7 @@ class ProductsSeeder extends Seeder
                 'description' => 'Un magnifique kimono japonais traditionnel.',
                 'price' => 120.00,
             ],
+            // 3️⃣ T-shirt Tokyo
             [
                 'name' => 'T-shirt Tokyo',
                 'slug' => 'tshirt-tokyo',

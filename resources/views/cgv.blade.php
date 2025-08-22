@@ -6,44 +6,78 @@
     <style>
         main {
             max-width: 850px;
-            margin: 2rem auto;
-            padding: 1rem 2rem;
+            margin: 3rem auto;
+            padding: 2rem 2.5rem;
+            background-color: #1a1a1a;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            line-height: 1.8;
+            color: #eee;
+            font-family: 'Inter', sans-serif;
         }
 
         h1 {
-            font-weight: 700;
-            font-size: 2.2rem;
-            margin-bottom: 1.5rem;
-            color: #eee;
+            font-weight: 800;
+            font-size: 2.4rem;
+            margin-bottom: 2rem;
             text-align: center;
+            color: #fff;
         }
 
         h2 {
-            font-weight: 600;
-            font-size: 1.5rem;
-            margin-top: 2rem;
+            font-weight: 700;
+            font-size: 1.6rem;
+            margin-top: 2.5rem;
             margin-bottom: 1rem;
-            color: #ddd;
+            color: #f0f0f0;
+            border-left: 4px solid #0a84ff;
             padding-left: 0.75rem;
         }
 
         p {
             font-size: 1.05rem;
-            line-height: 1.65;
-            color: #ccc;
-            margin-bottom: 1.2rem;
+            color: #ddd;
+            margin-bottom: 1.5rem;
             text-align: justify;
         }
 
         a {
+            color: #0a84ff;
             text-decoration: underline;
+            transition: color 0.2s;
         }
 
         a:hover {
+            color: #0080ff;
             text-decoration: none;
+        }
+
+        ul,
+        ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.8rem;
+        }
+
+        @media(max-width: 768px) {
+            main {
+                padding: 1.5rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.4rem;
+            }
         }
     </style>
 @endpush
+
 
 @section('content')
     <h1>Conditions Générales de Vente (CGV)</h1>
