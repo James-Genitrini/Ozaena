@@ -2,7 +2,6 @@
 # Merci pour votre commande 🎉
 
 Bonjour {{ $order->first_name }} {{ $order->last_name }},
-
 Nous avons bien reçu votre commande **#{{ $order->uuid }}** d’un montant de
 **{{ number_format($order->total, 2, ',', ' ') }} €**.
 

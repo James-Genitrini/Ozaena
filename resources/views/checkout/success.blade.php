@@ -5,7 +5,12 @@
 @section('content')
     <div class="max-w-3xl mx-auto mt-12 px-6 text-center">
         <h1 class="text-3xl font-bold mb-6 text-white">Merci pour votre commande !</h1>
-        <p class="mb-4 text-gray-300">Votre paiement a été accepté et votre commande est en cours de traitement.</p>
+        <p class="mb-4 text-gray-300">
+            Votre paiement a été accepté et votre commande est en cours de traitement.
+        </p>
+        <p class="mb-4 text-gray-300 font-medium">
+            Un e-mail de confirmation a été envoyé à l'adresse que vous avez fournie.
+        </p>
         <a href="{{ route('home') }}" class="btn-checkout inline-block mt-4">Retour à l'accueil</a>
     </div>
 @endsection

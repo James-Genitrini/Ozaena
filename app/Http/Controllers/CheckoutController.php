@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Mail\OrderConfirmationMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Str;
 use Stripe\Checkout\Session;
+use Stripe\Customer;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
 use Illuminate\Support\Facades\Auth;
@@ -53,22 +55,16 @@ class CheckoutController extends Controller
             'last_name' => 'required|string|max:100',
             'email' => 'required|email',
             'phone' => 'nullable|string|max:20',
-            'address' => 'required|string|max:255',
-            'address_apt' => 'nullable|string|max:100', // <--- ajouté
-            'postal_code' => 'required|string|max:10',
-            'city' => 'required|string|max:100',
-            'country' => 'required|in:FR',
         ]);
 
-
         $cart = $this->getCart();
-
-        $hasBundle = $cart->items->contains(fn($i) => $i->product->id === 1);
-        $shipping = $hasBundle ? 0 : 5; // Livraison gratuite si bundle, sinon 5€
 
         if ($cart->items->count() === 0) {
             return redirect()->route('cart.show')->with('error', 'Votre panier est vide.');
         }
+
+        $hasBundle = $cart->items->contains(fn($i) => $i->product->id === 1);
+        $shippingFee = $hasBundle ? 0 : 5;
 
         $lineItems = [];
         foreach ($cart->items as $item) {
@@ -83,14 +79,15 @@ class CheckoutController extends Controller
                 'quantity' => $item->quantity,
             ];
         }
-        if ($shipping > 0) {
+
+        if ($shippingFee > 0) {
             $lineItems[] = [
                 'price_data' => [
                     'currency' => 'eur',
                     'product_data' => [
                         'name' => 'Frais de livraison',
                     ],
-                    'unit_amount' => $shipping * 100,
+                    'unit_amount' => $shippingFee * 100,
                 ],
                 'quantity' => 1,
             ];
@@ -99,28 +96,26 @@ class CheckoutController extends Controller
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
         $session = Session::create([
-            'payment_method_types' => ['card'],
+            'payment_method_types' => ['card', 'paypal'],
             'line_items' => $lineItems,
             'mode' => 'payment',
             'customer_email' => $validated['email'],
-            'success_url' => route('checkout.success'),
+            'shipping_address_collection' => [
+                'allowed_countries' => ['FR'],
+            ],
+            'success_url' => route('checkout.success') . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('checkout.show'),
             'metadata' => [
-                'first_name' => $validated['first_name'],
-                'last_name' => $validated['last_name'],
-                'address_apt' => $validated['address_apt'] ?? '',
-                'user_id' => Auth::id(),
+                'user_id' => (string) Auth::id(),
+                'has_bundle' => $hasBundle ? 'yes' : 'no',
             ],
         ]);
 
 
-
-        // Stocker temporairement toutes les infos client
-        session(['checkout_data' => $validated]);
-
         // Redirection vers Stripe
         return redirect()->away($session->url);
     }
+
 
     public function success(Request $request)
     {
@@ -130,22 +125,30 @@ class CheckoutController extends Controller
             return redirect()->route('cart.show')->with('error', 'Votre panier est vide.');
         }
 
-        $data = session('checkout_data', []);
+        // Récupérer la session Stripe complète
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $sessionId = request()->get('session_id'); // Stripe passe ?session_id=xxxx
+        $stripeSession = Session::retrieve($sessionId, ['expand' => ['customer', 'customer.shipping']]);
 
-        $shipping = $cart->items->contains(fn($i) => $i->product->id === 1) ? 0 : 5;
+        $customer = $stripeSession->customer;
+        $shipping = $stripeSession->shipping;
 
-        $orderTotal = $cart->items->sum(fn($i) => $i->product->price * $i->quantity) + $shipping;
+        $orderTotal = $cart->items->sum(fn($i) => $i->product->price * $i->quantity);
+        if ($cart->items->contains(fn($i) => $i->product->id === 1) === false) {
+            $orderTotal += 5; // frais de livraison
+        }
 
         $order = Order::create([
             'user_id' => Auth::id(),
-            'first_name' => $data['first_name'] ?? '',
-            'last_name' => $data['last_name'] ?? '',
-            'email' => $data['email'] ?? '',
-            'phone' => $data['phone'] ?? '',
-            'address' => $data['address'] ?? '',
-            'postal_code' => $data['postal_code'] ?? '',
-            'city' => $data['city'] ?? '',
-            'country' => $data['country'] ?? 'FR',
+            'uuid' => (string) Str::uuid(),
+            'first_name' => $shipping->name ?? '',
+            'last_name' => '', // si tu veux séparer, il faudra l’envoyer dans metadata
+            'email' => $stripeSession->customer_email,
+            'phone' => $shipping->phone ?? '',
+            'address' => $shipping->address->line1 ?? '',
+            'postal_code' => $shipping->address->postal_code ?? '',
+            'city' => $shipping->address->city ?? '',
+            'country' => $shipping->address->country ?? 'FR',
             'status' => 'paid',
             'total' => $orderTotal,
             'delivery_note' => 'Précommande - délai dépendant du fournisseur',
@@ -168,9 +171,9 @@ class CheckoutController extends Controller
             Auth::user()->cart->items()->delete();
         }
         session()->forget('cart');
-        session()->forget('checkout_data');
 
         return view('checkout.success', compact('order'));
     }
+
 
 }
