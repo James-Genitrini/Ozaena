@@ -86,9 +86,20 @@ class CheckoutController extends Controller
             'line_items' => $lineItems,
             'mode' => 'payment',
             'customer_email' => $validated['email'],
+            'shipping' => [
+                'name' => $validated['first_name'] . ' ' . $validated['last_name'],
+                'address' => [
+                    'line1' => $validated['address'],
+                    'postal_code' => $validated['postal_code'],
+                    'city' => $validated['city'],
+                    'country' => $validated['country'],
+                ],
+                'phone' => $validated['phone'] ?? null,
+            ],
             'success_url' => route('checkout.success'),
             'cancel_url' => route('checkout.show'),
         ]);
+
 
         // Stocker temporairement toutes les infos client
         session(['checkout_data' => $validated]);
