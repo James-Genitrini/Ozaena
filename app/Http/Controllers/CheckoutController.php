@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Stripe\Checkout\Session;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
 use Illuminate\Support\Facades\Auth;
@@ -62,7 +63,6 @@ class CheckoutController extends Controller
             return redirect()->route('cart.show')->with('error', 'Votre panier est vide.');
         }
 
-        // Préparer les lignes Stripe
         $lineItems = [];
         foreach ($cart->items as $item) {
             $lineItems[] = [
@@ -79,7 +79,7 @@ class CheckoutController extends Controller
 
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
-        $session = StripeSession::create([
+        $session = Session::create([
             'payment_method_types' => ['card'],
             'line_items' => $lineItems,
             'mode' => 'payment',
@@ -91,7 +91,8 @@ class CheckoutController extends Controller
         // Stocker temporairement toutes les infos client
         session(['checkout_data' => $validated]);
 
-        return redirect($session->url);
+        // Redirection vers Stripe
+        return redirect()->away($session->url);
     }
 
     public function success(Request $request)

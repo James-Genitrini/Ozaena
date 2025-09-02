@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique(); // numéro de commande unique
+            $table->uuid('uuid')->unique()->default(DB::raw('(UUID())')); // <- ici !
 
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
 
