@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderConfirmationMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
@@ -105,7 +107,6 @@ class CheckoutController extends Controller
 
         $data = session('checkout_data', []);
 
-        // Créer la commande uniquement après paiement
         $orderTotal = $cart->items->sum(fn($i) => $i->product->price * $i->quantity);
 
         $order = Order::create([
@@ -132,6 +133,9 @@ class CheckoutController extends Controller
             ]);
         }
 
+        // Envoi du mail de confirmation
+        Mail::to($order->email)->send(new OrderConfirmationMail($order));
+
         // Nettoyage
         if (Auth::user()?->cart) {
             Auth::user()->cart->items()->delete();
@@ -141,4 +145,5 @@ class CheckoutController extends Controller
 
         return view('checkout.success', compact('order'));
     }
+
 }

@@ -78,72 +78,82 @@
     </style>
 @endpush
 
-
 @section('content')
     <h1>Conditions Générales de Vente (CGV)</h1>
 
-    <p>Les présentes conditions générales de vente s'appliquent à toutes les ventes conclues via le site Ozæna. En validant
-        une commande, le client reconnaît avoir lu et accepté les CGV dans leur intégralité.</p>
+    <h2>Article 1. Caractéristiques essentielles des produits vendus</h2>
+    <p>Les produits vendus sur ce site correspondent à des textiles prêt-à-porter de mode “streetwear”.
+        Y seront proposés à la vente, des maillots de football et plus généralement des articles à destination sportive.</p>
 
-    <h2>1. Caractéristiques essentielles des produits</h2>
-    <p>Les produits proposés sont décrits avec la plus grande exactitude possible (désignation, taille, composition,
-        visuels, etc.). Le client est invité à lire attentivement ces caractéristiques avant achat.</p>
+    <h2>Article 2. Prix de vente</h2>
+    <p>Les prix des produits vendus par nos soins présents sur le site se situent dans une fourchette
+        entre <em>(insérer montant)</em> et <em>(insérer montant)</em> €. En cas de réduction ou d’offre exclusive de notre
+        part,
+        les changements de prix des articles concernés seront indiqués sur l’interface même du présent site internet.
+        Les prix sont indiqués en EUROS (€).</p>
 
-    <h2>2. Prix</h2>
-    <p>Les prix sont indiqués en euros TTC (toutes taxes comprises) et hors frais de livraison. Les frais de port sont
-        précisés avant validation de la commande. Ozæna se réserve le droit de modifier ses prix à tout moment sans préavis.
-    </p>
+    <h2>Article 3. Paiement</h2>
+    <p>Le paiement est dû lors de la validation de votre panier et votre consentement donné pour procéder à l’étape suivante
+        constitutive dudit paiement.</p>
 
-    <h2>3. Commande</h2>
-    <p>Le client passe commande en ligne via le site. L’acceptation définitive intervient après validation du paiement.
-        Ozæna se réserve le droit de refuser une commande en cas de litige antérieur.</p>
+    <h3>Article 3.1. Modalité de paiement</h3>
+    <p>Le paiement de votre commande s’effectuera à travers le site internet à l’aide de votre carte bancaire.
+        Ce mode de paiement est le seul admissible à travers notre site.
+        Un e-mail de confirmation de réception de votre commande par nos soins vous sera envoyé par la suite afin d’en
+        certifier la teneur.</p>
 
-    <h2>4. Paiement</h2>
-    <p>Le paiement s’effectue en ligne via une solution sécurisée (ex: Stripe, PayPal). Les moyens de paiement acceptés sont
-        : carte bancaire, etc. En cas de retard de paiement, la commande ne sera pas expédiée.</p>
+    <h3>Article 3.2. Retard de paiement</h3>
+    <p>En cas de solde insuffisant, le paiement ne pourra avoir lieu, ce qui annulera la commande.
+        Néanmoins, si la commande est acceptée malgré un solde insuffisant, une notification vous sera adressée afin de
+        régler le reste dû,
+        majoré d’intérêts moratoires à taux légal (7,21% pour un consommateur non professionnel).
+        Pour un consommateur professionnel, le taux applicable est celui de la BCE majoré de 10 points, calculé par jour
+        jusqu’au paiement intégral.</p>
 
-    <h2>5. Livraison</h2>
-    <p>Les produits sont livrés en France métropolitaine (et autres zones précisées sur le site). Les délais de livraison
-        sont indiqués lors de la commande à titre indicatif. Les frais de livraison sont à la charge du client et affichés
-        avant validation.</p>
+    <h2>Article 4. Livraison de votre commande</h2>
+    <p>La livraison sera assurée par un prestataire externe. Elle portera un coût supplémentaire variant selon l’adresse de
+        livraison.
+        En cas de commande comportant deux articles ou plus, les frais de livraison vous seront offerts.</p>
+    <p>Le délai de livraison est susceptible de varier en fonction de l’adresse de livraison souhaitée.</p>
 
-    <h2>6. Exécution du contrat</h2>
-    <p>Le contrat est réputé conclu à réception du paiement. Ozæna s’engage à livrer les produits dans les délais annoncés,
-        sauf cas de force majeure.</p>
+    <h2>Article 5. Délai de rétractation</h2>
+    <p>Conformément à l’article L221-18 du code de la consommation, vous disposez d’un délai de 14 jours pour annuler votre
+        commande.
+        Il vous suffira de remplir le formulaire prévu à cet effet sur le site.</p>
+    <p>En cas de rétractation, les frais de retour sont à la charge du consommateur, sauf si le vendeur choisit de les
+        prendre en charge.
+        Le consommateur dispose également de 14 jours pour renvoyer le bien.</p>
 
-    <h2>7. Droit de rétractation</h2>
-    <p>Conformément aux articles L221-18 et suivants du Code de la consommation, le client dispose d’un délai de 14 jours
-        pour exercer son droit de rétractation, sans justification ni frais, à l’exception des frais de retour.</p>
-    <p>Le produit doit être retourné dans son état d’origine. Pour exercer ce droit, envoyez un mail à <a
-            href="mailto:contact@ozæna.com">contact@ozæna.com</a>.</p>
+    <h3>Article 5.1. Conditions de remboursement</h3>
+    <p>En cas de rétractation et retour du produit, la société <em>Ozaena</em> procèdera au remboursement sous 14
+        jours maximum,
+        après réception du bien ou preuve de son renvoi.
+        Le remboursement se fera par virement bancaire sur communication du RIB du consommateur.</p>
 
-    <h2>8. Garanties légales</h2>
-    <p>Les produits bénéficient de la garantie légale de conformité (articles L217-4 et suivants du Code de la consommation)
-        et de la garantie contre les vices cachés (articles 1641 et suivants du Code civil).</p>
+    <h2>Article 6. Responsabilité du bien</h2>
+    <p>La responsabilité du bien incombe au vendeur jusqu’à l’envoi.
+        Elle est ensuite transférée au transporteur, puis au consommateur lors de la livraison.</p>
 
-    <h2>9. Garantie commerciale / SAV</h2>
-    <p>Si une garantie commerciale est proposée, ses conditions seront précisées sur la fiche produit. Le coût de la
-        communication à distance (email, téléphone) est au tarif normal sans surtaxe.</p>
+    <h2>Article 7. Service après-vente (SAV)</h2>
+    <p>Un service après-vente est assuré par la société <em>Ozaena</em>.
+        Contact par mail : <em>contact@ozaena.com</em> pour toute demande (produit, rétractation, remboursement…).</p>
 
-    <h2>10. Durée du contrat et résiliation</h2>
-    <p>Il n’existe pas de contrat à durée indéterminée. Chaque commande est ponctuelle et conclue pour la durée nécessaire à
-        l'exécution et la livraison de la commande.</p>
+    <h2>Article 8. Coordonnées de la société</h2>
+    <p><em>(Insérer les coordonnées de la société)</em></p>
 
-    <h2>11. Caution / Garantie</h2>
-    <p>Aucune caution ou garantie financière n’est exigée du client pour finaliser une commande.</p>
+    <h2>Article 9. Recours à une résolution amiable</h2>
+    <p>En cas de litige, le recours à une médiation ou conciliation de justice est obligatoire depuis le 1er octobre 2023.
+        La société <em>Ozaena</em> s’engage à saisir une personnalité judiciaire compétente.</p>
 
-    <h2>12. Obligations minimales du client</h2>
-    <p>Le client s’engage à fournir des informations exactes lors de la commande et à procéder au paiement intégral du
-        montant dû.</p>
+    <h2>Article 10. Numéro RCS</h2>
+    <p><em>(Insérer numéro d’inscription au registre du commerce et des sociétés)</em></p>
 
-    <h2>13. Code de conduite</h2>
-    <p>Ozæna n’adhère à aucun code de conduite spécifique.</p>
+    <h2>Article 11. Tribunal compétent</h2>
+    <p>Si aucun accord amiable n’est trouvé, le tribunal judiciaire sera compétent pour trancher le litige entre vendeur
+        professionnel et consommateur.</p>
 
-    <h2>14. Litiges et médiation</h2>
-    <p>En cas de litige, le client peut d’abord adresser une réclamation à Ozæna. À défaut d’accord amiable, le litige peut
-        être porté devant le tribunal compétent du lieu du domicile du client.</p>
-    <p>Le client peut également recourir à un médiateur de la consommation via <a href="https://ec.europa.eu/consumers/odr"
-            target="_blank">la plateforme européenne de règlement des litiges en ligne (RLL)</a>.</p>
-
-    <p>Pour toute question, contactez-nous à <a href="mailto:contact@ozæna.com">contact@ozæna.com</a>.</p>
+    <h2>Article 12. Police d’assurance</h2>
+    <p>La société <em>Ozaena</em> a souscrit une assurance civile professionnelle auprès de <em>(insérer
+            compagnie)</em>,
+        couvrant <em>(insérer couverture prévue)</em>.</p>
 @endsection
