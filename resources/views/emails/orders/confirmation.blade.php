@@ -17,6 +17,12 @@ Nous avons bien reçu votre commande **#{{ $order->uuid }}** d’un montant de
 
 ---
 
+Si vous souhaitez demander un remboursement, vous pouvez nous contacter dans un délai de 14 jours à
+**contact@ozaena.com**, conformément à nos conditions générales de vente (CGV).
+
+---
+
+
 Nous vous tiendrons informés lorsque votre commande sera expédiée.
 
 Merci de votre confiance,
