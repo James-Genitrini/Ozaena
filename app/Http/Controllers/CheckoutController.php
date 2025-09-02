@@ -54,12 +54,17 @@ class CheckoutController extends Controller
             'email' => 'required|email',
             'phone' => 'nullable|string|max:20',
             'address' => 'required|string|max:255',
+            'address_apt' => 'nullable|string|max:100', // <--- ajouté
             'postal_code' => 'required|string|max:10',
             'city' => 'required|string|max:100',
             'country' => 'required|in:FR',
         ]);
 
+
         $cart = $this->getCart();
+
+        $hasBundle = $cart->items->contains(fn($i) => $i->product->id === 1);
+        $shipping = $hasBundle ? 0 : 5; // Livraison gratuite si bundle, sinon 5€
 
         if ($cart->items->count() === 0) {
             return redirect()->route('cart.show')->with('error', 'Votre panier est vide.');
@@ -78,6 +83,18 @@ class CheckoutController extends Controller
                 'quantity' => $item->quantity,
             ];
         }
+        if ($shipping > 0) {
+            $lineItems[] = [
+                'price_data' => [
+                    'currency' => 'eur',
+                    'product_data' => [
+                        'name' => 'Frais de livraison',
+                    ],
+                    'unit_amount' => $shipping * 100,
+                ],
+                'quantity' => 1,
+            ];
+        }
 
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
@@ -86,19 +103,16 @@ class CheckoutController extends Controller
             'line_items' => $lineItems,
             'mode' => 'payment',
             'customer_email' => $validated['email'],
-            'shipping' => [
-                'name' => $validated['first_name'] . ' ' . $validated['last_name'],
-                'address' => [
-                    'line1' => $validated['address'],
-                    'postal_code' => $validated['postal_code'],
-                    'city' => $validated['city'],
-                    'country' => $validated['country'],
-                ],
-                'phone' => $validated['phone'] ?? null,
-            ],
             'success_url' => route('checkout.success'),
             'cancel_url' => route('checkout.show'),
+            'metadata' => [
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'address_apt' => $validated['address_apt'] ?? '',
+                'user_id' => Auth::id(),
+            ],
         ]);
+
 
 
         // Stocker temporairement toutes les infos client
@@ -118,7 +132,9 @@ class CheckoutController extends Controller
 
         $data = session('checkout_data', []);
 
-        $orderTotal = $cart->items->sum(fn($i) => $i->product->price * $i->quantity);
+        $shipping = $cart->items->contains(fn($i) => $i->product->id === 1) ? 0 : 5;
+
+        $orderTotal = $cart->items->sum(fn($i) => $i->product->price * $i->quantity) + $shipping;
 
         $order = Order::create([
             'user_id' => Auth::id(),

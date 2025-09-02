@@ -128,6 +128,10 @@
                         <input type="text" name="address" id="address" placeholder="Adresse" required>
                         <div id="address-suggestions" class="suggestions"></div>
                     </div>
+
+                    <!-- Champ complément d'adresse -->
+                    <input type="text" name="address_apt" id="address_apt"
+                        placeholder="Appartement, étage, suite (facultatif)">
                     <input type="text" name="postal_code" id="postal_code" placeholder="Code postal" required>
                     <input type="text" name="city" id="city" placeholder="Ville" required>
                     <select name="country" id="country" required>
@@ -140,6 +144,15 @@
             <div class="column">
                 <div class="checkout-box cart-summary">
                     <h3>Récapitulatif du panier</h3>
+
+                    @php
+                        // Vérifie si le panier contient un bundle
+                        $hasBundle = $cart->items->contains(fn($i) => $i->product->id === 1);
+                        $shipping = $hasBundle ? 0 : 5;
+                        $subtotal = $cart->items->sum(fn($i) => $i->product->price * $i->quantity);
+                        $total = $subtotal + $shipping;
+                    @endphp
+
                     <ul>
                         @foreach ($cart->items as $item)
                             <li>
@@ -148,10 +161,15 @@
                             </li>
                         @endforeach
                         <li>
+                            <span>Livraison</span>
+                            <span>€{{ number_format($shipping, 2) }}</span>
+                        </li>
+                        <li>
                             <span>Total</span>
-                            <span>€{{ number_format($cart->items->sum(fn($i) => $i->product->price * $i->quantity), 2) }}</span>
+                            <span>€{{ number_format($total, 2) }}</span>
                         </li>
                     </ul>
+
                     <p class="text-warning">
                         ⚠️ Tous les produits sont en <strong>précommande</strong>.
                     </p>
@@ -161,91 +179,90 @@
         </div>
     </form>
 
-    {{-- JS Autocomplete adresse (inchangé) --}}
+    {{-- JS Autocomplete adresse --}}
     <script>
-            (() => {
-                const addressInput = document.getElementById('address');
-                const suggestionsBox = document.getElementById('address-suggestions');
-                const postal = document.getElementById('postal_code');
-                const city = document.getElementById('city');
+        (() => {
+            const addressInput = document.getElementById('address');
+            const suggestionsBox = document.getElementById('address-suggestions');
+            const postal = document.getElementById('postal_code');
+            const city = document.getElementById('city');
 
-                let activeIndex = -1;
-                let items = [];
-                let controller = null;
-                let debounceTimer = null;
+            let activeIndex = -1;
+            let items = [];
+            let controller = null;
+            let debounceTimer = null;
 
-                function clearSuggestions() {
-                    suggestionsBox.innerHTML = '';
-                    suggestionsBox.style.display = 'none';
-                    items = [];
-                    activeIndex = -1;
-                }
+            function clearSuggestions() {
+                suggestionsBox.innerHTML = '';
+                suggestionsBox.style.display = 'none';
+                items = [];
+                activeIndex = -1;
+            }
 
-                function renderSuggestions(features) {
-                    suggestionsBox.innerHTML = '';
-                    items = features.map((f, idx) => {
-                        const div = document.createElement('div');
-                        div.className = 'suggestion-item';
-                        div.textContent = f.properties.label;
-                        div.addEventListener('mousedown', e => { e.preventDefault(); chooseFeature(f); });
-                        suggestionsBox.appendChild(div);
-                        return { el: div, feature: f };
-                    });
-                    suggestionsBox.style.display = items.length ? 'block' : 'none';
-                }
-
-                function chooseFeature(f) {
-                    addressInput.value = f.properties.street || '';
-                    if (postal) postal.value = f.properties.postcode || '';
-                    if (city) city.value = f.properties.city || '';
-                    clearSuggestions();
-                }
-
-
-                function setActive(index) {
-                    if (!items.length) return;
-                    items.forEach((it, i) => it.el.setAttribute('aria-selected', i === index ? 'true' : 'false'));
-                    activeIndex = index;
-                    const activeEl = items[index]?.el;
-                    if (activeEl) {
-                        const rect = activeEl.getBoundingClientRect();
-                        const parentRect = suggestionsBox.getBoundingClientRect();
-                        if (rect.bottom > parentRect.bottom) activeEl.scrollIntoView(false);
-                        if (rect.top < parentRect.top) activeEl.scrollIntoView();
-                    }
-                }
-
-                async function fetchAddresses(q) {
-                    if (controller) controller.abort();
-                    controller = new AbortController();
-                    try {
-                        const res = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(q)}&limit=5`, { signal: controller.signal });
-                        if (!res.ok) throw new Error('HTTP ' + res.status);
-                        const data = await res.json();
-                        renderSuggestions(data.features || []);
-                    } catch (e) { if (e.name !== 'AbortError') clearSuggestions(); }
-                }
-
-                addressInput.addEventListener('input', () => {
-                    const q = addressInput.value.trim();
-                    clearTimeout(debounceTimer);
-                    if (q.length < 3) { clearSuggestions(); return; }
-                    debounceTimer = setTimeout(() => fetchAddresses(q), 220);
+            function renderSuggestions(features) {
+                suggestionsBox.innerHTML = '';
+                items = features.map((f, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.textContent = f.properties.label;
+                    div.addEventListener('mousedown', e => { e.preventDefault(); chooseFeature(f); });
+                    suggestionsBox.appendChild(div);
+                    return { el: div, feature: f };
                 });
+                suggestionsBox.style.display = items.length ? 'block' : 'none';
+            }
 
-                addressInput.addEventListener('keydown', e => {
-                    if (suggestionsBox.style.display !== 'block') return;
-                    if (e.key === 'ArrowDown') { e.preventDefault(); setActive(activeIndex < items.length - 1 ? activeIndex + 1 : 0); }
-                    else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(activeIndex > 0 ? activeIndex - 1 : items.length - 1); }
-                    else if (e.key === 'Enter') { if (activeIndex >= 0 && items[activeIndex]) { e.preventDefault(); chooseFeature(items[activeIndex].feature); } }
-                    else if (e.key === 'Escape') { clearSuggestions(); }
-                });
+            function chooseFeature(f) {
+                addressInput.value = f.properties.street || '';
+                if (postal) postal.value = f.properties.postcode || '';
+                if (city) city.value = f.properties.city || '';
+                clearSuggestions();
+            }
 
-                document.addEventListener('click', e => {
-                    if (!addressInput.contains(e.target) && !suggestionsBox.contains(e.target)) clearSuggestions();
-                });
+            function setActive(index) {
+                if (!items.length) return;
+                items.forEach((it, i) => it.el.setAttribute('aria-selected', i === index ? 'true' : 'false'));
+                activeIndex = index;
+                const activeEl = items[index]?.el;
+                if (activeEl) {
+                    const rect = activeEl.getBoundingClientRect();
+                    const parentRect = suggestionsBox.getBoundingClientRect();
+                    if (rect.bottom > parentRect.bottom) activeEl.scrollIntoView(false);
+                    if (rect.top < parentRect.top) activeEl.scrollIntoView();
+                }
+            }
 
-                addressInput.addEventListener('blur', () => setTimeout(clearSuggestions, 120));
-            })();
+            async function fetchAddresses(q) {
+                if (controller) controller.abort();
+                controller = new AbortController();
+                try {
+                    const res = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(q)}&limit=5`, { signal: controller.signal });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+                    renderSuggestions(data.features || []);
+                } catch (e) { if (e.name !== 'AbortError') clearSuggestions(); }
+            }
+
+            addressInput.addEventListener('input', () => {
+                const q = addressInput.value.trim();
+                clearTimeout(debounceTimer);
+                if (q.length < 3) { clearSuggestions(); return; }
+                debounceTimer = setTimeout(() => fetchAddresses(q), 220);
+            });
+
+            addressInput.addEventListener('keydown', e => {
+                if (suggestionsBox.style.display !== 'block') return;
+                if (e.key === 'ArrowDown') { e.preventDefault(); setActive(activeIndex < items.length - 1 ? activeIndex + 1 : 0); }
+                else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(activeIndex > 0 ? activeIndex - 1 : items.length - 1); }
+                else if (e.key === 'Enter') { if (activeIndex >= 0 && items[activeIndex]) { e.preventDefault(); chooseFeature(items[activeIndex].feature); } }
+                else if (e.key === 'Escape') { clearSuggestions(); }
+            });
+
+            document.addEventListener('click', e => {
+                if (!addressInput.contains(e.target) && !suggestionsBox.contains(e.target)) clearSuggestions();
+            });
+
+            addressInput.addEventListener('blur', () => setTimeout(clearSuggestions, 120));
+        })();
     </script>
 @endsection

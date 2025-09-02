@@ -3,7 +3,7 @@
 
 Bonjour {{ $order->first_name }} {{ $order->last_name }},
 
-Nous avons bien reçu votre commande **#{{ $order->id }}** d’un montant de
+Nous avons bien reçu votre commande **#{{ $order->uuid }}** d’un montant de
 **{{ number_format($order->total, 2, ',', ' ') }} €**.
 
 ## Détails de la commande :
