@@ -22,6 +22,7 @@ class Order extends Model
         'email',
         'phone',
         'delivery_note',
+        'uuid',
     ];
 
     public function items()
