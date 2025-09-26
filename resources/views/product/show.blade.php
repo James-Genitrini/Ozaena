@@ -190,6 +190,11 @@
                     </button>
                     <div class="accordion-content px-4 py-3 text-sm text-gray-300 hidden">
                         Maillot domicile du Japon, coupe ajustée et matériaux respirants pour un confort optimal.
+                        <br><br>
+                        • Lavage à 30 °C <br>
+                        • 100 % coton <br>
+                        • 450 gsm (jogging et gilet) <br>
+                        • Fabriqué au Pakistan
                     </div>
                 </div>
 
@@ -199,7 +204,62 @@
                         Entretien
                     </button>
                     <div class="accordion-content px-4 py-3 text-sm text-gray-300 hidden">
-                        Lavage en machine à 30°C, ne pas blanchir, ne pas sécher en tambour, repassage à basse température.
+                        Lavage en machine à 30 °C, ne pas blanchir, ne pas sécher en tambour, repassage à basse température.
+                    </div>
+                </div>
+
+                {{-- Nouveau : Guide des tailles --}}
+                <div class="accordion-section">
+                    <button type="button"
+                        class="accordion-header w-full text-left px-4 py-3 font-semibold text-white hover:bg-[#333]">
+                        Guide des tailles
+                    </button>
+                    <div class="accordion-content px-4 py-3 text-sm text-gray-300 hidden">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr>
+                                    <th class="pr-4">Taille</th>
+                                    <th class="pr-4">Longueur (A)</th>
+                                    <th class="pr-4">Poitrine (C)</th>
+                                    <th class="pr-4">Épaules (B)</th>
+                                    <th class="pr-4">Manches (G)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>S</td>
+                                    <td>64,8 cm</td>
+                                    <td>50,8 cm</td>
+                                    <td>48,3 cm</td>
+                                    <td>63,5 cm</td>
+                                </tr>
+                                <tr>
+                                    <td>M</td>
+                                    <td>67,3 cm</td>
+                                    <td>54,6 cm</td>
+                                    <td>50,8 cm</td>
+                                    <td>64,8 cm</td>
+                                </tr>
+                                <tr>
+                                    <td>L</td>
+                                    <td>69,8 cm</td>
+                                    <td>58,4 cm</td>
+                                    <td>53,3 cm</td>
+                                    <td>66,0 cm</td>
+                                </tr>
+                                <tr>
+                                    <td>XL</td>
+                                    <td>72,4 cm</td>
+                                    <td>62,2 cm</td>
+                                    <td>55,9 cm</td>
+                                    <td>67,3 cm</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="mt-2">
+                            Coupe oversize : si vous êtes entre deux tailles, prenez la plus petite pour un fit plus ajusté,
+                            ou la plus grande pour un look encore plus loose.
+                        </p>
                     </div>
                 </div>
             </div>
