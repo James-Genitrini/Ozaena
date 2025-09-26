@@ -46,6 +46,12 @@
         {{-- Liste des commandes --}}
         <section>
             <h2 style="font-size: 1.4rem; margin-bottom: 1rem;">Mes commandes</h2>
+
+            <p style="margin-bottom: 1rem;">
+                Pour toute demande de remboursement, veuillez rédiger un mail à
+                <a href="mailto:contact@ozaena.com">contact@ozaena.com</a>. <br>Ajoutez votre numéro de commande et la raison pour laquelle vous souhaitez un remboursement.
+            </p>
+
             @if($orders->isEmpty())
                 <p>Vous n’avez pas encore passé de commande.</p>
             @else
@@ -55,26 +61,20 @@
                             {{ number_format($order->total, 2, ',', ' ') }} €
                         </p>
                         <p>Adresse : {{ $order->address }}, {{ $order->postal_code }} {{ $order->city }}</p>
-
+                        <p>Date : {{ $order->created_at->format('d/m/Y H:i') }}</p>
+                        <p style="margin-top: 1rem; font-weight: 600;">Articles :</p>
                         <ul>
                             @foreach($order->items as $item)
-                                <li>{{ $item->product->name }} (x{{ $item->quantity }}) –
-                                    {{ number_format($item->unit_price, 2, ',', ' ') }} €
+                                <li style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                                    <img src="{{ $item->product->main_image_front }}" alt="{{ $item->product->name }}"
+                                        style="max-width: 50px; margin-right: 0.5rem;">
+                                    <span>
+                                        {{ $item->product->name }} (x{{ $item->quantity }}) –
+                                        {{ number_format($item->unit_price, 2, ',', ' ') }} €
+                                    </span>
                                 </li>
                             @endforeach
                         </ul>
-
-                        {{-- Formulaire remboursement --}}
-                        <form method="POST" action="{{ route('profile.refund', $order) }}" style="margin-top: 1rem;">
-                            @csrf
-                            <label>Demande de remboursement :</label>
-                            <textarea name="reason" rows="2" required
-                                style="width: 100%; padding: 0.5rem; border-radius: 6px;"></textarea>
-                            <button type="submit"
-                                style="margin-top: 0.5rem; background: red; color: #fff; padding: 0.4rem 1rem; border-radius: 6px;">
-                                Envoyer la demande
-                            </button>
-                        </form>
                     </div>
                 @endforeach
             @endif
