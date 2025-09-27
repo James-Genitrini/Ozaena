@@ -162,9 +162,9 @@
                 <h3 style="color: #F5F5F5; margin-bottom: 1rem;">Contact</h3>
                 <p>Email : <a href="mailto:contact@ozaena.com"
                         style="color: #ccc; text-decoration: none;">contact@ozaena.com</a></p>
-                <p>Téléphone : <a href="tel:+33123456789" style="color: #ccc; text-decoration: none;">+33 1 23 45 67 89</a>
+                <p>Téléphone : <a href="tel:+33123456789" style="color: #ccc; text-decoration: none;">+33 6 66 63 68 44</a>
                 </p>
-                <p>Adresse : 123 Rue Exemple, 75000 Paris, France</p>
+                <p>Adresse : 519 A LES COREAUX, 68910 LABAROCHE, FRANCE</p>
             </div>
     
             <!-- Mentions légales -->

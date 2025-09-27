@@ -11,32 +11,32 @@ class ProductsSeeder extends Seeder
     public function run()
     {
         $productsData = [
-            // 1️⃣ Bundle en premier
+            // Ensemble Nocturna Gris
             [
-                'name' => 'Bundle Kimono + T-shirt',
-                'slug' => 'bundle-kimono-tshirt',
-                'main_image_front' => 'images/bundle_front.png', // image du bundle
-                'main_image_back' => 'images/bundle_back.png',
-                'description' => 'Bundle incluant le Kimono Japonais et le T-shirt Tokyo à prix spécial.',
-                'price' => 145.00, // prix réduit par rapport à l'achat séparé
+                'name' => 'Ensemble Nocturna Gris',
+                'slug' => 'ensemble-nocturna-gris',
+                'main_image_front' => 'images/hoodie_gray_front.png',
+                'main_image_back' => 'images/jogging_gray_front.png',
+                'description' => 'Ensemble incluant le hoodie et le jogging. Livraison offerte',
+                'price' => 110.00, // prix réduit par rapport à l'achat séparé
             ],
-            // 2️⃣ Kimono Japonais
+            // Hoodie Nocturna Gris
             [
-                'name' => 'Kimono Japonais',
-                'slug' => 'kimono-japonais',
-                'main_image_front' => 'images/japon_front.png',
-                'main_image_back' => 'images/japon_back.png',
-                'description' => 'Un magnifique kimono japonais traditionnel.',
-                'price' => 120.00,
+                'name' => 'Hoodie Nocturna Gris',
+                'slug' => 'hoodie-nocturna-gris',
+                'main_image_front' => 'images/hoodie_gray_front.png',
+                'main_image_back' => null,
+                'description' => 'Hoodie confortable avec le logo Nocturna.',
+                'price' => 55.00,
             ],
-            // 3️⃣ T-shirt Tokyo
+            // Jogging
             [
-                'name' => 'T-shirt Tokyo',
-                'slug' => 'tshirt-tokyo',
-                'main_image_front' => 'images/tokyo_front.png',
-                'main_image_back' => 'images/tokyo_back.png',
-                'description' => 'T-shirt stylé inspiré de Tokyo.',
-                'price' => 35.00,
+                'name' => 'Jogging Nocturna Gris',
+                'slug' => 'jogging-nocturna-gris',
+                'main_image_front' => 'images/jogging_gray_front.png',
+                'main_image_back' => 'images/jogging_gray_back.png',
+                'description' => 'Jogging confortable avec le logo Nocturna.',
+                'price' => 55.00,
             ],
         ];
 
@@ -46,7 +46,7 @@ class ProductsSeeder extends Seeder
                 $data
             );
 
-            $sizes = ['XS', 'S', 'M', 'L', 'XL'];
+            $sizes = ['S', 'M', 'L', 'XL'];
             foreach ($sizes as $size) {
                 $product->sizes()->updateOrCreate(['size' => $size]);
             }

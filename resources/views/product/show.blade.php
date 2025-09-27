@@ -139,13 +139,26 @@
             <img id="mainImage" src="{{ asset($product->main_image_front) }}" alt="{{ $product->name }}"
                 class="main-image mx-auto" />
 
+            @php
+                $galleryImages;
+                if ($product->main_image_back) {
+                    $galleryImages = collect([
+                        (object) ['image_path' => $product->main_image_front],
+                        (object) ['image_path' => $product->main_image_back],
+                    ]);
+                } else {
+                    $galleryImages = collect([(object) ['image_path' => $product->main_image_front]]);
+                }
+            @endphp
+
             <div class="thumbnails justify-center">
-                @foreach($images as $img)
+                @foreach($galleryImages as $img)
                     <img src="{{ asset($img->image_path) }}" alt="{{ $product->name }}"
                         class="thumbnail {{ $loop->first ? 'active' : '' }}"
                         onclick="document.getElementById('mainImage').src='{{ asset($img->image_path) }}'; setActiveThumbnail(this);" />
                 @endforeach
             </div>
+
         </div>
 
         <!-- Détails -->
