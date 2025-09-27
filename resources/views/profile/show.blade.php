@@ -48,8 +48,8 @@
             <h2 style="font-size: 1.4rem; margin-bottom: 1rem;">Mes commandes</h2>
 
             <p style="margin-bottom: 1rem;">
-                Pour toute demande de remboursement, veuillez rédiger un mail à
-                <a href="mailto:contact@ozaena.com">contact@ozaena.com</a>. <br>Ajoutez votre numéro de commande et la raison pour laquelle vous souhaitez un remboursement.
+                Pour toute demande de remboursement ou modification de commande, veuillez rédiger un mail à
+                <a href="mailto:contact@ozaena.com">contact@ozaena.com</a>. <br>Ajoutez votre numéro de commande et la raison pour laquelle vous souhaitez un remboursement ou les modifications à effectuer.
             </p>
 
             @if($orders->isEmpty())
