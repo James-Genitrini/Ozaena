@@ -18,7 +18,15 @@ class ProductsSeeder extends Seeder
                 'main_image_front' => 'images/hoodie_gray_front.png',
                 'main_image_back' => 'images/jogging_gray_front.png',
                 'description' => 'Ensemble incluant le hoodie et le jogging. Livraison offerte',
-                'price' => 110.00, // prix réduit par rapport à l'achat séparé
+                'price' => 110.00,
+            ],
+            [
+                'name' => 'Ensemble Nocturna Noir',
+                'slug' => 'ensemble-nocturna-noir',
+                'main_image_front' => 'images/hoodie_black_front.png',
+                'main_image_back' => 'images/jogging_black_front.png',
+                'description' => 'Ensemble incluant le hoodie et le jogging. Livraison offerte',
+                'price' => 110.00,
             ],
             // Hoodie Nocturna Gris
             [
@@ -35,6 +43,23 @@ class ProductsSeeder extends Seeder
                 'slug' => 'jogging-nocturna-gris',
                 'main_image_front' => 'images/jogging_gray_front.png',
                 'main_image_back' => 'images/jogging_gray_back.png',
+                'description' => 'Jogging confortable avec le logo Nocturna.',
+                'price' => 55.00,
+            ],
+            [
+                'name' => 'Hoodie Nocturna Noir',
+                'slug' => 'hoodie-nocturna-noir',
+                'main_image_front' => 'images/hoodie_black_front.png',
+                'main_image_back' => null,
+                'description' => 'Hoodie confortable avec le logo Nocturna.',
+                'price' => 55.00,
+            ],
+            // Jogging
+            [
+                'name' => 'Jogging Nocturna Noir',
+                'slug' => 'jogging-nocturna-noir',
+                'main_image_front' => 'images/jogging_black_front.png',
+                'main_image_back' => 'images/jogging_black_back.png',
                 'description' => 'Jogging confortable avec le logo Nocturna.',
                 'price' => 55.00,
             ],

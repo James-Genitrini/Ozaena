@@ -63,8 +63,13 @@ class CheckoutController extends Controller
             return redirect()->route('cart.show')->with('error', 'Votre panier est vide.');
         }
 
-        $hasBundle = $cart->items->contains(fn($i) => $i->product->id === 1);
-        $shippingFee = $hasBundle ? 0 : 5;
+        // Si le panier contient un montant > 100, la livraison est gratuite
+        $priceTotal = $cart->items->sum(fn($i) => $i->product->price * $i->quantity);
+        if ($priceTotal >= 100) {
+            $shippingFree = 0;
+        } else {
+            $shippingFree = 5;
+        }
 
         $lineItems = [];
         foreach ($cart->items as $item) {
@@ -80,14 +85,14 @@ class CheckoutController extends Controller
             ];
         }
 
-        if ($shippingFee > 0) {
+        if ($shippingFree > 0) {
             $lineItems[] = [
                 'price_data' => [
                     'currency' => 'eur',
                     'product_data' => [
                         'name' => 'Frais de livraison',
                     ],
-                    'unit_amount' => $shippingFee * 100,
+                    'unit_amount' => $shippingFree * 100,
                 ],
                 'quantity' => 1,
             ];
@@ -107,7 +112,6 @@ class CheckoutController extends Controller
             'cancel_url' => route('checkout.show'),
             'metadata' => [
                 'user_id' => (string) Auth::id(),
-                'has_bundle' => $hasBundle ? 'yes' : 'no',
             ],
         ]);
 

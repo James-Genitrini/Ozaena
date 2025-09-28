@@ -87,7 +87,7 @@
 
     <h2>Article 2. Prix de vente</h2>
     <p>Les prix des produits vendus par nos soins présents sur le site se situent dans une fourchette
-        entre <em>(insérer montant)</em> et <em>(insérer montant)</em> €. En cas de réduction ou d’offre exclusive de notre
+        entre <em>55</em> et <em>110</em> €. En cas de réduction ou d’offre exclusive de notre
         part,
         les changements de prix des articles concernés seront indiqués sur l’interface même du présent site internet.
         Les prix sont indiqués en EUROS (€).</p>
