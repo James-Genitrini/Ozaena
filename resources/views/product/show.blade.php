@@ -149,6 +149,13 @@
                 } else {
                     $galleryImages = collect([(object) ['image_path' => $product->main_image_front]]);
                 }
+
+                // Append $images à galleryImages
+                if ($product->images && $product->images->count() > 0) {
+                    foreach ($product->images as $img) {
+                        $galleryImages->push($img);
+                    }
+                }
             @endphp
 
             <div class="thumbnails justify-center">
@@ -202,7 +209,7 @@
                         Détails produit
                     </button>
                     <div class="accordion-content px-4 py-3 text-sm text-gray-300 hidden">
-                        Maillot domicile du Japon, coupe ajustée et matériaux respirants pour un confort optimal.
+                        {{ $product->description }}
                         <br><br>
                         • Lavage à 30 °C <br>
                         • 100 % coton <br>

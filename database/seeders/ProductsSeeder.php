@@ -17,7 +17,7 @@ class ProductsSeeder extends Seeder
                 'slug' => 'ensemble-nocturna-gris',
                 'main_image_front' => 'images/hoodie_gray_front.png',
                 'main_image_back' => 'images/jogging_gray_front.png',
-                'description' => 'Ensemble incluant le hoodie et le jogging. Livraison offerte',
+                'description' => 'Ensemble incluant le hoodie et le jogging de la collection Capsule 00 en version grise. Livraison offerte',
                 'price' => 110.00,
             ],
             [
@@ -25,7 +25,7 @@ class ProductsSeeder extends Seeder
                 'slug' => 'ensemble-nocturna-noir',
                 'main_image_front' => 'images/hoodie_black_front.png',
                 'main_image_back' => 'images/jogging_black_front.png',
-                'description' => 'Ensemble incluant le hoodie et le jogging. Livraison offerte',
+                'description' => 'Ensemble incluant le hoodie et le jogging de la collection Capsule 00 en version noire. Livraison offerte',
                 'price' => 110.00,
             ],
             // Hoodie Nocturna Gris
@@ -34,7 +34,7 @@ class ProductsSeeder extends Seeder
                 'slug' => 'hoodie-nocturna-gris',
                 'main_image_front' => 'images/hoodie_gray_front.png',
                 'main_image_back' => null,
-                'description' => 'Hoodie confortable avec le logo Nocturna.',
+                'description' => 'Hoodie confortable de la collection Capsule 00 en version grise.',
                 'price' => 55.00,
             ],
             // Jogging
@@ -43,7 +43,7 @@ class ProductsSeeder extends Seeder
                 'slug' => 'jogging-nocturna-gris',
                 'main_image_front' => 'images/jogging_gray_front.png',
                 'main_image_back' => 'images/jogging_gray_back.png',
-                'description' => 'Jogging confortable avec le logo Nocturna.',
+                'description' => 'Jogging confortable de la collection Capsule 00 en version grise.',
                 'price' => 55.00,
             ],
             [
@@ -51,7 +51,7 @@ class ProductsSeeder extends Seeder
                 'slug' => 'hoodie-nocturna-noir',
                 'main_image_front' => 'images/hoodie_black_front.png',
                 'main_image_back' => null,
-                'description' => 'Hoodie confortable avec le logo Nocturna.',
+                'description' => 'Hoodie confortable de la collection Capsule 00 en version noire.',
                 'price' => 55.00,
             ],
             // Jogging
@@ -60,7 +60,7 @@ class ProductsSeeder extends Seeder
                 'slug' => 'jogging-nocturna-noir',
                 'main_image_front' => 'images/jogging_black_front.png',
                 'main_image_back' => 'images/jogging_black_back.png',
-                'description' => 'Jogging confortable avec le logo Nocturna.',
+                'description' => 'Jogging confortable de la collection Capsule 00 en version noire.',
                 'price' => 55.00,
             ],
         ];
@@ -76,5 +76,22 @@ class ProductsSeeder extends Seeder
                 $product->sizes()->updateOrCreate(['size' => $size]);
             }
         }
+
+        $product = Product::where('slug', 'ensemble-nocturna-gris')->first();
+
+        if ($product) {
+            $product->images()->create([
+                'image_path' => 'images/jogging_gray_back.png',
+            ]);
+        }
+
+        $product = Product::where('slug', 'ensemble-nocturna-noir')->first();
+
+        if ($product) {
+            $product->images()->create([
+                'image_path' => 'images/jogging_black_back.png',
+            ]);
+        }
+
     }
 }

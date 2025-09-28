@@ -24,8 +24,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $products = Product::whereIn('id', [3, 1, 2])->get();
-
+        // $products = Product::whereIn('id', [3, 1, 2])->get();
+        $products = Product::all();
         $cartCount = CartController::getCartCount();
 
         return view('shop.home', compact('products', 'cartCount'));
