@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'opening_date' => env('SITE_OPENING_DATE', '2025-10-05 09:00:00'),
+
 ];

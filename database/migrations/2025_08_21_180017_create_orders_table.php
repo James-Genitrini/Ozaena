@@ -20,10 +20,11 @@ return new class extends Migration {
             $table->string('phone')->nullable();
 
             // Adresse
-            $table->string('address');
-            $table->string('postal_code', 10);
-            $table->string('city', 100);
-            $table->string('country', 50)->default('FR');
+            $table->string('address')->nullable();
+            $table->string('postal_code')->nullable();
+            $table->string('city')->nullable();
+            $table->string('country')->default('FR');
+
 
             // Infos commande
             $table->string('status')->default('pending');

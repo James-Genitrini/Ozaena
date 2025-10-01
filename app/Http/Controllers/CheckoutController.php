@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Mail\OrderConfirmationMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use Str;
-use Stripe\Checkout\Session;
-use Stripe\Customer;
-use Stripe\Stripe;
-use Stripe\Checkout\Session as StripeSession;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Stripe\Checkout\Session;
+use Stripe\Stripe;
+use Stripe\Customer as StripeCustomer;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\Order;
@@ -26,7 +25,6 @@ class CheckoutController extends Controller
             $cart->setRelation('items', collect());
         }
 
-        // Utiliser la session pour le front
         $sessionItems = collect(session('cart', []))->map(function ($item) {
             $item['product'] = Product::find($item['product_id']);
             return (object) $item;
@@ -63,13 +61,24 @@ class CheckoutController extends Controller
             return redirect()->route('cart.show')->with('error', 'Votre panier est vide.');
         }
 
-        // Si le panier contient un montant > 100, la livraison est gratuite
         $priceTotal = $cart->items->sum(fn($i) => $i->product->price * $i->quantity);
-        if ($priceTotal >= 100) {
-            $shippingFree = 0;
-        } else {
-            $shippingFree = 5;
-        }
+        $shippingFree = $priceTotal >= 100 ? 0 : 5;
+
+        // Création de la commande en pending
+        $order = Order::create([
+            'user_id' => Auth::id(),
+            'uuid' => (string) Str::uuid(),
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? '',
+            'status' => 'pending',
+            'total' => $priceTotal + $shippingFree,
+            'address' => '', // placeholder vide
+            'postal_code' => '',
+            'city' => '',
+            'country' => 'FR',
+        ]);
 
         $lineItems = [];
         foreach ($cart->items as $item) {
@@ -89,9 +98,7 @@ class CheckoutController extends Controller
             $lineItems[] = [
                 'price_data' => [
                     'currency' => 'eur',
-                    'product_data' => [
-                        'name' => 'Frais de livraison',
-                    ],
+                    'product_data' => ['name' => 'Frais de livraison'],
                     'unit_amount' => $shippingFree * 100,
                 ],
                 'quantity' => 1,
@@ -100,26 +107,33 @@ class CheckoutController extends Controller
 
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
+        // Création du Customer Stripe avec description contenant UUID
+        $customer = StripeCustomer::create([
+            'email' => $validated['email'],
+            'name' => $validated['first_name'] . ' ' . $validated['last_name'],
+            'phone' => $validated['phone'] ?? null,
+            'description' => 'Commande UUID: ' . $order->uuid,
+        ]);
+
         $session = Session::create([
             'payment_method_types' => ['card'],
             'line_items' => $lineItems,
             'mode' => 'payment',
-            'customer_email' => $validated['email'],
+            'customer' => $customer->id, // ✅ pas de customer_email ici
             'shipping_address_collection' => [
                 'allowed_countries' => ['FR'],
             ],
             'success_url' => route('checkout.success') . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('checkout.show'),
+            'client_reference_id' => $order->uuid,
             'metadata' => [
                 'user_id' => (string) Auth::id(),
+                'order_uuid' => $order->uuid,
             ],
         ]);
 
-
-        // Redirection vers Stripe
         return redirect()->away($session->url);
     }
-
 
     public function success(Request $request)
     {
@@ -133,51 +147,46 @@ class CheckoutController extends Controller
         $sessionId = $request->get('session_id');
         $stripeSession = Session::retrieve([
             'id' => $sessionId,
-            'expand' => ['shipping'],
+            'expand' => ['shipping', 'customer'],
         ]);
 
-        // Récupération de l'adresse de livraison depuis Stripe
+        $orderUuid = $stripeSession->metadata->order_uuid ?? null;
+        $order = Order::where('uuid', $orderUuid)->firstOrFail();
+
         $shipping = $stripeSession->customer_details ?? null;
+        $customer = $stripeSession->customer ?? null;
 
         if ($shipping) {
-            $fullName = $shipping->name ?? '';
+            $fullName = $shipping->name ?? ($customer->name ?? '');
             $address = $shipping->address ?? null;
-            $phone = $shipping->phone ?? '';
+            $phone = $shipping->phone ?? ($customer->phone ?? '');
+            $email = $customer->email ?? $stripeSession->customer_email ?? $order->email;
         } else {
-            // Fallback si Stripe ne renvoie pas d'adresse
-            $fullName = $request->input('first_name') . ' ' . $request->input('last_name');
+            $fullName = $order->first_name . ' ' . $order->last_name;
             $address = (object) [
-                'line1' => $request->input('address') ?? '',
-                'city' => $request->input('city') ?? '',
-                'postal_code' => $request->input('postal_code') ?? '',
-                'country' => $request->input('country') ?? 'FR',
+                'line1' => '',
+                'city' => '',
+                'postal_code' => '',
+                'country' => 'FR',
             ];
-            $phone = $request->input('phone') ?? '';
+            $phone = $order->phone ?? '';
+            $email = $order->email;
         }
 
         $nameParts = explode(' ', $fullName);
         $firstName = $nameParts[0] ?? '';
         $lastName = count($nameParts) > 1 ? implode(' ', array_slice($nameParts, 1)) : '';
 
-        // Calcul du total
-        $orderTotal = $cart->items->sum(fn($i) => $i->product->price * $i->quantity);
-        if (!$cart->items->contains(fn($i) => $i->product->id === 1)) {
-            $orderTotal += 5; // frais de livraison
-        }
-
-        $order = Order::create([
-            'user_id' => Auth::id(),
-            'uuid' => (string) Str::uuid(),
+        $order->update([
             'first_name' => $firstName,
             'last_name' => $lastName,
-            'email' => $stripeSession->customer_email,
+            'email' => $email,
             'phone' => $phone,
             'address' => $address->line1 ?? '',
             'postal_code' => $address->postal_code ?? '',
             'city' => $address->city ?? '',
             'country' => $address->country ?? 'FR',
             'status' => 'paid',
-            'total' => $orderTotal,
             'delivery_note' => 'Précommande - délai dépendant du fournisseur',
         ]);
 
@@ -190,10 +199,8 @@ class CheckoutController extends Controller
             ]);
         }
 
-        // Envoi du mail de confirmation
         Mail::to($order->email)->send(new OrderConfirmationMail($order));
 
-        // Nettoyage du panier
         if (Auth::user()?->cart) {
             Auth::user()->cart->items()->delete();
         }
@@ -201,5 +208,4 @@ class CheckoutController extends Controller
 
         return view('checkout.success', compact('order'));
     }
-
 }

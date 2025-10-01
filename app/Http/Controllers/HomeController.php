@@ -3,32 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
-        // $products = Product::whereIn('id', [3, 1, 2])->get();
-        $products = Product::all();
-        $cartCount = CartController::getCartCount();
+        $openingDate = Carbon::parse(config('app.opening_date'))
+            ->setTimezone(config('app.timezone'));
+        $now = Carbon::now()->setTimezone(config('app.timezone'));
 
-        return view('shop.home', compact('products', 'cartCount'));
+        if ($now->lt($openingDate)) {
+            // Passe le timestamp en millisecondes côté JS
+            return view('coming-soon', [
+                'openingDateTimestamp' => $openingDate->timestamp * 1000
+            ]);
+        } else {
+            $products = Product::all();
+            $cartCount = CartController::getCartCount();
+
+            return view('shop.home', compact('products', 'cartCount'));
+        }
     }
-
 }
