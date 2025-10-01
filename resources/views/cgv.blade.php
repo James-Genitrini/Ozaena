@@ -139,21 +139,24 @@
         Contact par mail : <em>contact@ozaena.com</em> pour toute demande (produit, rétractation, remboursement…).</p>
 
     <h2>Article 8. Coordonnées de la société</h2>
-    <p><em>(Insérer les coordonnées de la société)</em></p>
+    <p><em>SIRET : 990 958 506 00018<br>
+    Adresse : 519 A LES COREAUX, 68910 LABAROCHE<br>
+    Email : <a href="mailto:contact@ozæna.com">contact@ozæna.com</a><br>
+    Téléphone : +33 6 66 63 68 44</em></p>
 
     <h2>Article 9. Recours à une résolution amiable</h2>
     <p>En cas de litige, le recours à une médiation ou conciliation de justice est obligatoire depuis le 1er octobre 2023.
         La société <em>Ozaena</em> s’engage à saisir une personnalité judiciaire compétente.</p>
 
     <h2>Article 10. Numéro RCS</h2>
-    <p><em>(Insérer numéro d’inscription au registre du commerce et des sociétés)</em></p>
+    <p><em>990 958 506 00018</em></p>
 
     <h2>Article 11. Tribunal compétent</h2>
     <p>Si aucun accord amiable n’est trouvé, le tribunal judiciaire sera compétent pour trancher le litige entre vendeur
         professionnel et consommateur.</p>
 
-    <h2>Article 12. Police d’assurance</h2>
+    {{-- <h2>Article 12. Police d’assurance</h2>
     <p>La société <em>Ozaena</em> a souscrit une assurance civile professionnelle auprès de <em>(insérer
             compagnie)</em>,
-        couvrant <em>(insérer couverture prévue)</em>.</p>
+        couvrant <em>(insérer couverture prévue)</em>.</p> --}}
 @endsection

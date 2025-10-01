@@ -11,6 +11,8 @@
             min-height: 80vh;
             padding: 2rem 1rem;
             gap: 3rem;
+            position: relative;
+            /* nécessaire si on garde une position absolue dans ce bloc */
         }
 
         .collection-title {
@@ -46,39 +48,44 @@
             }
         }
 
-        /* Bloc bundle + ses produits */
-        .bundle-block {
-            width: 100%;
-            max-width: 1024px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .bundle-single {
-            width: 100%;
-            max-width: 600px;
-        }
-
         .product-row {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 2rem;
             width: 100%;
+            max-width: 1024px;
         }
 
         .product-single {
             flex: 1 1 45%;
             max-width: 280px;
         }
+
+        /* --- Bandelette livraison --- */
+        .shipping-banner {
+            position: absolute;
+            top: 4rem;
+            /* descend sous la navbar */
+            right: -4rem;
+            color: rgba(255, 255, 0, 0.753);
+            padding: 0.5rem 4rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transform: rotate(45deg);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            z-index: 5;
+        }
     </style>
 @endpush
 
 @section('content')
     <div class="main-content">
+        <!-- Bandelette en haut à droite mais plus bas -->
+        <div class="shipping-banner">
+            Livraison offerte dès 100€
+        </div>
+
         <h1 class="collection-title">Découvrez la collection Capsule 00</h1>
 
         <!-- Logo -->
@@ -86,35 +93,25 @@
             <img src="{{ asset('images/500_logo.png') }}" alt="Ozaena logo" class="logo-layer" />
         </div>
 
-        {{-- Premier bundle et ses 2 produits --}}
-        @if($products->count() >= 3)
-            <div class="bundle-block">
-                <div class="bundle-single">
-                    <x-product-card :product="$products[0]" />
-                </div>
-                <div class="product-row">
-                    @foreach($products->slice(2, 2) as $product)
-                        <div class="product-single">
-                            <x-product-card :product="$product" />
-                        </div>
-                    @endforeach
-                </div>
+        {{-- Première ligne : 2 produits --}}
+        @if($products->count() >= 2)
+            <div class="product-row">
+                @foreach($products->take(2) as $product)
+                    <div class="product-single">
+                        <x-product-card :product="$product" />
+                    </div>
+                @endforeach
             </div>
         @endif
 
-        {{-- Deuxième bundle et ses 2 produits --}}
-        @if($products->count() >= 6)
-            <div class="bundle-block">
-                <div class="bundle-single">
-                    <x-product-card :product="$products[1]" />
-                </div>
-                <div class="product-row">
-                    @foreach($products->slice(4, 2) as $product)
-                        <div class="product-single">
-                            <x-product-card :product="$product" />
-                        </div>
-                    @endforeach
-                </div>
+        {{-- Deuxième ligne : 2 autres produits --}}
+        @if($products->count() >= 4)
+            <div class="product-row">
+                @foreach($products->slice(2, 2) as $product)
+                    <div class="product-single">
+                        <x-product-card :product="$product" />
+                    </div>
+                @endforeach
             </div>
         @endif
     </div>

@@ -11,23 +11,6 @@ class ProductsSeeder extends Seeder
     public function run()
     {
         $productsData = [
-            // Ensemble Nocturna Gris
-            [
-                'name' => 'Ensemble Nocturna Gris',
-                'slug' => 'ensemble-nocturna-gris',
-                'main_image_front' => 'images/hoodie_gray_front.png',
-                'main_image_back' => 'images/jogging_gray_front.png',
-                'description' => 'Ensemble incluant le hoodie et le jogging de la collection Capsule 00 en version grise. Livraison offerte',
-                'price' => 110.00,
-            ],
-            [
-                'name' => 'Ensemble Nocturna Noir',
-                'slug' => 'ensemble-nocturna-noir',
-                'main_image_front' => 'images/hoodie_black_front.png',
-                'main_image_back' => 'images/jogging_black_front.png',
-                'description' => 'Ensemble incluant le hoodie et le jogging de la collection Capsule 00 en version noire. Livraison offerte',
-                'price' => 110.00,
-            ],
             // Hoodie Nocturna Gris
             [
                 'name' => 'Hoodie Nocturna Gris',
