@@ -113,12 +113,23 @@
                 </tbody>
                 <tfoot>
                     <tr>
+                        <td colspan="4" class="text-right font-bold">Frais de livraison :</td>
+                        <td colspan="2" class="font-semibold" id="cart-shipping">
+                            @php
+                                $cartTotal = $cart->items->sum(fn($item) => $item->product->price * $item->quantity);
+                                $shipping = $cartTotal >= 100 ? 0 : 5;
+                            @endphp
+                            €{{ number_format($shipping, 2) }}
+                        </td>
+                    </tr>
+                    <tr>
                         <td colspan="4" class="text-right font-bold">Total général :</td>
                         <td colspan="2" class="font-semibold" id="cart-grand-total">
-                            €{{ number_format($cart->items->sum(fn($item) => $item->product->price * $item->quantity), 2) }}
+                            €{{ number_format($cartTotal + $shipping, 2) }}
                         </td>
                     </tr>
                 </tfoot>
+
             </table>
 
             <div class="mt-6 text-right">
