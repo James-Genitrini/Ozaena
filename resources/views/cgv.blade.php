@@ -136,7 +136,7 @@
 
     <h2>Article 7. Service après-vente (SAV)</h2>
     <p>Un service après-vente est assuré par la société <em>Ozaena</em>.
-        Contact par mail : <em>contact@ozaena.com</em> pour toute demande (produit, rétractation, remboursement…).</p>
+        Contact par mail : <em>contact.ozaena@gmail.com</em> pour toute demande (produit, rétractation, remboursement…).</p>
 
     <h2>Article 8. Coordonnées de la société</h2>
     <p><em>SIRET : 990 958 506 00018<br>

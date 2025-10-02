@@ -49,7 +49,7 @@
 
             <p style="margin-bottom: 1rem;">
                 Pour toute demande de remboursement ou modification de commande, veuillez rédiger un mail à
-                <a href="mailto:contact@ozaena.com">contact@ozaena.com</a>. <br>Ajoutez votre numéro de commande et la raison pour laquelle vous souhaitez un remboursement ou les modifications à effectuer.
+                <a href="mailto:contact.ozaena@gmail.com">contact.ozaena@gmail.com</a>. <br>Ajoutez votre numéro de commande et la raison pour laquelle vous souhaitez un remboursement ou les modifications à effectuer.
             </p>
 
             @if($orders->isEmpty())

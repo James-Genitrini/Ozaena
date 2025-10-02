@@ -52,7 +52,7 @@ class ProfileController extends Controller
 
         // Exemple simple : on envoie juste un mail admin
         \Mail::raw("Demande de remboursement pour la commande #{$order->id}\n\nRaison : {$request->reason}", function ($message) use ($order) {
-            $message->to('contact@ozaena.com')
+            $message->to('contact.ozaena@gmail.com')
                 ->subject("Demande de remboursement - Commande #{$order->id}");
         });
 

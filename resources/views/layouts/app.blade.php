@@ -150,8 +150,8 @@
             <!-- Contact -->
             <div style="flex: 1 1 200px;">
                 <h3 style="color: #F5F5F5; margin-bottom: 1rem;">Contact</h3>
-                <p>Email : <a href="mailto:contact@ozaena.com"
-                        style="color: #ccc; text-decoration: none;">contact@ozaena.com</a></p>
+                <p>Email : <a href="mailto:contact.ozaena@gmail.com"
+                        style="color: #ccc; text-decoration: none;">contact.ozaena@gmail.com</a></p>
                 <p>Téléphone : <a href="tel:+33123456789" style="color: #ccc; text-decoration: none;">+33 6 66 63 68 44</a>
                 </p>
                 <p>Adresse : 519 A LES COREAUX, 68910 LABAROCHE, FRANCE</p>
