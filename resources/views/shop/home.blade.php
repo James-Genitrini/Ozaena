@@ -12,7 +12,6 @@
             padding: 2rem 1rem;
             gap: 3rem;
             position: relative;
-            /* nécessaire si on garde une position absolue dans ce bloc */
         }
 
         .collection-title {
@@ -62,11 +61,10 @@
             max-width: 280px;
         }
 
-        /* --- Bandelette livraison --- */
+        /* --- Bandelette livraison (par défaut, desktop/tablette) --- */
         .shipping-banner {
             position: absolute;
             top: 4rem;
-            /* descend sous la navbar */
             right: -4rem;
             color: rgba(255, 255, 0, 0.753);
             padding: 0.5rem 4rem;
@@ -76,8 +74,28 @@
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
             z-index: 5;
         }
+
+        /* --- Responsive : affichage mobile --- */
+        @media (max-width: 768px) {
+            .shipping-banner {
+                position: static;
+                /* ne colle plus en haut à droite */
+                transform: none;
+                /* enlève la rotation */
+                text-align: center;
+                /* texte centré */
+                margin-bottom: 1rem;
+                /* espace sous la bannière */
+                display: block;
+                padding: 0.5rem 1rem;
+                /* padding adapté mobile */
+                box-shadow: none;
+                /* plus discret */
+            }
+        }
     </style>
 @endpush
+
 
 @section('content')
     <div class="main-content">
