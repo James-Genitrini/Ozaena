@@ -30,7 +30,7 @@ Route::get('/coming-soon', function () {
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // Authentification
-Auth::routes(['verify' => true]);
+Auth::routes(options: ['verify' => true]);
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
