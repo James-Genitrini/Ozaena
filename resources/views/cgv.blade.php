@@ -141,7 +141,7 @@
     <h2>Article 8. Coordonnées de la société</h2>
     <p><em>SIRET : 990 958 506 00018<br>
     Adresse : 519 A LES COREAUX, 68910 LABAROCHE<br>
-    Email : <a href="mailto:contact@ozæna.com">contact@ozæna.com</a><br>
+    Email : <a href="mailto:contact.ozaena@gmail.com">contact.ozaena@gmail.com</a><br>
     Téléphone : +33 6 66 63 68 44</em></p>
 
     <h2>Article 9. Recours à une résolution amiable</h2>
