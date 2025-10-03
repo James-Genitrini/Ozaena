@@ -117,7 +117,7 @@
                     </form>
                 @else
                     <a href="{{ route('login') }}" style="color: #F5F5F5; text-decoration: none; font-weight: 600;">
-                        Login
+                        Connectez-vous
                     </a>
                 @endauth
             </div>
